@@ -12,7 +12,7 @@ export default defineConfig({
             '@/lib': path.resolve(__dirname, './src/lib'),
             '@/hooks': path.resolve(__dirname, './src/hooks'),
             '@/pages': path.resolve(__dirname, './src/pages'),
-            '@/entities': path.resolve(__dirname, './entities')
+            '@/entities': path.resolve(__dirname, './src/entities')
         }
     },
     server: {
