@@ -69,6 +69,16 @@ const translations = {
         delete_confirm_desc: "Bu amalni ortga qaytarib bo'lmaydi. Talaba ma'lumotlari butunlay o'chiriladi.",
         delete_cancel: "Bekor qilish",
         delete_confirm: "O'chirish",
+        // Hero Section
+        hero_badge: "Innovatsion pedagogik tizim",
+        hero_facilitator: "Fasilitator",
+        hero_facilitator_desc: "O'qituvchi moderator sifatida",
+        hero_simulation: "Simulyatsiya",
+        hero_simulation_desc: "Faoliyatga asoslangan o'qitish",
+        hero_trajectories: "Traektoriyalar",
+        hero_trajectories_desc: "Individual yondashuv",
+        hero_monitoring: "Monitoring",
+        hero_monitoring_desc: "MPMS tizimi",
         success: "Muvaffaqiyatli!",
     },
     uz_cyr: {
@@ -139,6 +149,16 @@ const translations = {
         delete_confirm_desc: "Бу амални ортга қайтариб бўлмайди. Талаба маълумотлари бутунлай ўчирилади.",
         delete_cancel: "Бекор қилиш",
         delete_confirm: "Ўчириш",
+        // Hero Section
+        hero_badge: "Инновацион педагогик тизим",
+        hero_facilitator: "Фасилитатор",
+        hero_facilitator_desc: "Ўқитувчи модератор сифатида",
+        hero_simulation: "Симуляция",
+        hero_simulation_desc: "Фаолиятга асосланган ўқитиш",
+        hero_trajectories: "Траекториялар",
+        hero_trajectories_desc: "Индивидуал ёндашув",
+        hero_monitoring: "Мониторинг",
+        hero_monitoring_desc: "MPMS тизими",
         success: "Муваффақиятли!",
     },
     ru: {
@@ -209,6 +229,16 @@ const translations = {
         delete_confirm_desc: "Это действие нельзя отменить. Данные студента будут удалены безвозвратно.",
         delete_cancel: "Отмена",
         delete_confirm: "Удалить",
+        // Hero Section
+        hero_badge: "Инновационная педагогическая система",
+        hero_facilitator: "Фасилитатор",
+        hero_facilitator_desc: "Преподаватель как модератор",
+        hero_simulation: "Симуляция",
+        hero_simulation_desc: "Деятельностное обучение",
+        hero_trajectories: "Траектории",
+        hero_trajectories_desc: "Индивидуальный подход",
+        hero_monitoring: "Мониторинг",
+        hero_monitoring_desc: "MPMS система",
         success: "Успешно!",
     }
 };

@@ -91,9 +91,57 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-8 pb-12">
-            <div>
-                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{t('dashboard')}</h1>
-                <p className="mt-2 text-gray-600">{t('feirm_subtitle')}</p>
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-8 shadow-2xl">
+                {/* Background Pattern */}
+                <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+
+                <div className="relative z-10 space-y-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-medium text-blue-100">
+                        <Sparkles className="w-3 h-3" />
+                        {t('hero_badge')}
+                    </div>
+
+                    <div className="space-y-2 max-w-3xl">
+                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                            {t('feirm_title')}
+                        </h1>
+                        <p className="text-blue-100/80 text-lg">
+                            {t('feirm_subtitle')}
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+                        {/* Card 1: Facilitator */}
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                            <Users className="w-6 h-6 text-blue-300 mb-2" />
+                            <h3 className="font-semibold text-white">{t('hero_facilitator')}</h3>
+                            <p className="text-xs text-blue-100/70 mt-1">{t('hero_facilitator_desc')}</p>
+                        </div>
+
+                        {/* Card 2: Simulation */}
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                            <Sparkles className="w-6 h-6 text-indigo-300 mb-2" />
+                            <h3 className="font-semibold text-white">{t('hero_simulation')}</h3>
+                            <p className="text-xs text-blue-100/70 mt-1">{t('hero_simulation_desc')}</p>
+                        </div>
+
+                        {/* Card 3: Trajectories */}
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                            <TrendingUp className="w-6 h-6 text-amber-300 mb-2" />
+                            <h3 className="font-semibold text-white">{t('hero_trajectories')}</h3>
+                            <p className="text-xs text-blue-100/70 mt-1">{t('hero_trajectories_desc')}</p>
+                        </div>
+
+                        {/* Card 4: Monitoring */}
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                            <Brain className="w-6 h-6 text-emerald-300 mb-2" />
+                            <h3 className="font-semibold text-white">{t('hero_monitoring')}</h3>
+                            <p className="text-xs text-blue-100/70 mt-1">{t('hero_monitoring_desc')}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Stats Grid - 6 Panels */}
