@@ -13,26 +13,30 @@ import Monitoring from './pages/Monitoring';
 import SBCM from './pages/SBCM';
 import ContentGenerator from './pages/ContentGenerator';
 
+import { LanguageProvider } from './components/shared/LanguageContext';
+
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Layout />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path="students" element={<Students />} />
-                    <Route path="modules" element={<Modules />} />
-                    <Route path="simulations" element={<Simulations />} />
-                    <Route path="simulations/analytics" element={<SimulationAnalytics />} />
-                    <Route path="portfolio" element={<Portfolio />} />
-                    <Route path="reflections" element={<Reflections />} />
-                    <Route path="trajectories" element={<Trajectories />} />
-                    <Route path="facilitators" element={<Facilitators />} />
-                    <Route path="monitoring" element={<Monitoring />} />
-                    <Route path="sbcm" element={<SBCM />} />
-                    <Route path="content-generator" element={<ContentGenerator />} />
-                </Route>
-            </Routes>
-        </Router>
+        <LanguageProvider>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Layout />}>
+                        <Route index element={<Dashboard />} />
+                        <Route path="students" element={<Students />} />
+                        <Route path="modules" element={<Modules />} />
+                        <Route path="simulations" element={<Simulations />} />
+                        <Route path="simulations/analytics" element={<SimulationAnalytics />} />
+                        <Route path="portfolio" element={<Portfolio />} />
+                        <Route path="reflections" element={<Reflections />} />
+                        <Route path="trajectories" element={<Trajectories />} />
+                        <Route path="facilitators" element={<Facilitators />} />
+                        <Route path="monitoring" element={<Monitoring />} />
+                        <Route path="sbcm" element={<SBCM />} />
+                        <Route path="content-generator" element={<ContentGenerator />} />
+                    </Route>
+                </Routes>
+            </Router>
+        </LanguageProvider>
     );
 }
 
