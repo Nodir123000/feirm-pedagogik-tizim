@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { fetchStudents } from '@/entities/Student';
+import { fetchLearningModules } from '@/entities/LearningModule';
+import { fetchSimulationScenarios } from '@/entities/SimulationScenario';
+import { fetchReflections } from '@/entities/Reflection';
 import {
     Users,
     Search,
@@ -7,7 +10,12 @@ import {
     Filter,
     RefreshCcw,
     Loader2,
-    MoreHorizontal
+    MoreHorizontal,
+    BookOpen,
+    Gamepad2,
+    TrendingUp,
+    MessageSquare,
+    AlertTriangle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/components/shared/LanguageContext';
@@ -31,6 +39,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import StatCard from '@/components/dashboard/StatCard';
 
 const specializationColors = {
     drilling: 'bg-blue-100 text-blue-700',
@@ -43,27 +52,70 @@ const specializationColors = {
 export default function Students() {
     const { t } = useLanguage();
     const [students, setStudents] = useState([]);
+    const [stats, setStats] = useState({
+        students: 0,
+        activeStudents: 0,
+        modules: 0,
+        activeModules: 0,
+        simulations: 0,
+        complexScenarios: 0,
+        avgProgress: 0,
+        reflections: 0,
+        pendingReflections: 0,
+        atRiskStudents: 0
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterGroup, setFilterGroup] = useState('All');
 
-    const loadStudents = async () => {
+    const loadData = async () => {
         setLoading(true);
         setError(null);
         try {
-            const data = await fetchStudents();
-            setStudents(data || []);
+            const [studentsData, modulesData, simulationsData, reflectionsData] = await Promise.all([
+                fetchStudents(),
+                fetchLearningModules(),
+                fetchSimulationScenarios(),
+                fetchReflections()
+            ]);
+
+            const studentsList = studentsData || [];
+            const modules = modulesData || [];
+            const simulations = simulationsData || [];
+            const reflections = reflectionsData || [];
+
+            setStudents(studentsList);
+
+            const avgProg = studentsList.length
+                ? Math.round(studentsList.reduce((acc, s) => acc + (s.progress || 0), 0) / studentsList.length)
+                : 0;
+
+            const atRisk = studentsList.filter(s => (s.progress || 0) < 50).length;
+
+            setStats({
+                students: studentsList.length,
+                activeStudents: Math.round(studentsList.length * 0.85),
+                modules: modules.length,
+                activeModules: modules.filter(m => m.is_active).length,
+                simulations: simulations.length,
+                complexScenarios: simulations.filter(s => s.difficulty_level === 'Hard').length,
+                avgProgress: avgProg,
+                reflections: reflections.length,
+                pendingReflections: 2,
+                atRiskStudents: atRisk
+            });
+
         } catch (err) {
-            console.error('Failed to load students:', err);
-            setError('Could not load students.');
+            console.error('Failed to load data:', err);
+            setError('Could not load data.');
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        loadStudents();
+        loadData();
     }, []);
 
     const filteredStudents = students.filter(student => {
@@ -105,6 +157,56 @@ export default function Students() {
                 </button>
             </div>
 
+            {/* Stats Grid - 6 Panels */}
+            {/* Same grid layout as Dashboard */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-6">
+                <StatCard
+                    title={t('total_students')}
+                    value={stats.students}
+                    subtitle={`${stats.activeStudents} ${t('active')}`}
+                    icon={Users}
+                    color="blue"
+                    trend={12}
+                />
+                <StatCard
+                    title={t('active_modules')}
+                    value={stats.modules}
+                    subtitle={`${stats.activeModules} ${t('active')}`}
+                    icon={BookOpen}
+                    color="emerald"
+                    trend={5}
+                />
+                <StatCard
+                    title={t('simulations')}
+                    value={stats.simulations}
+                    subtitle={`${stats.complexScenarios} ${t('hard_level')}`}
+                    icon={Gamepad2}
+                    color="violet"
+                />
+                <StatCard
+                    title={t('average_progress')}
+                    value={`${stats.avgProgress}%`}
+                    subtitle={t('global_indicator')}
+                    icon={TrendingUp}
+                    color="amber"
+                    trend={8}
+                />
+                <StatCard
+                    title={t('reflections')}
+                    value={stats.reflections}
+                    subtitle={`${stats.pendingReflections} ${t('pending_review')}`}
+                    icon={MessageSquare}
+                    color="cyan"
+                />
+                <StatCard
+                    title={t('attention_required')}
+                    value={stats.atRiskStudents}
+                    subtitle={t('at_risk_students')}
+                    icon={AlertTriangle}
+                    color="rose"
+                />
+            </div>
+
             {/* Controls */}
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1">
@@ -131,7 +233,7 @@ export default function Students() {
                         </select>
                     </div>
                     <button
-                        onClick={loadStudents}
+                        onClick={loadData}
                         className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-all"
                     >
                         <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
@@ -154,12 +256,13 @@ export default function Students() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[300px]">Student</TableHead>
+                                <TableHead className="w-[250px]">Student</TableHead>
                                 <TableHead>Group</TableHead>
                                 <TableHead>Specialization</TableHead>
                                 <TableHead>Progress</TableHead>
-                                <TableHead className="text-right">Competencies</TableHead>
-                                <TableHead className="w-[50px]"></TableHead>
+                                <TableHead className="text-right">Prof. Comp.</TableHead>
+                                <TableHead className="text-right">Meta Comp.</TableHead>
+                                <TableHead className="w-[50px] text-center">Действие</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -201,16 +304,10 @@ export default function Students() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <div className="flex flex-col items-end gap-1">
-                                                <div className="text-xs">
-                                                    <span className="text-gray-500 mr-2">Prof.</span>
-                                                    <span className="font-medium text-blue-600">{student.professional_competency || 0}%</span>
-                                                </div>
-                                                <div className="text-xs">
-                                                    <span className="text-gray-500 mr-2">Meta</span>
-                                                    <span className="font-medium text-emerald-600">{student.meta_competency || 0}%</span>
-                                                </div>
-                                            </div>
+                                            <span className="font-bold text-blue-600">{student.professional_competency || 0}%</span>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <span className="font-bold text-emerald-600">{student.meta_competency || 0}%</span>
                                         </TableCell>
                                         <TableCell>
                                             <DropdownMenu>
