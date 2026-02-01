@@ -97,7 +97,7 @@ export default function Dashboard() {
             </div>
 
             {/* Stats Grid - 6 Panels */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                 <StatCard
                     title={t('total_students')}
                     value={stats.students}
