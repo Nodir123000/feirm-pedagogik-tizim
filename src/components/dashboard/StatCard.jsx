@@ -10,6 +10,8 @@ export default function StatCard({ title, value, subtitle, icon: Icon, color = "
         violet: "bg-violet-50 text-violet-600 border-violet-100",
         rose: "bg-rose-50 text-rose-600 border-rose-100",
         slate: "bg-slate-50 text-slate-600 border-slate-100",
+        cyan: "bg-cyan-50 text-cyan-600 border-cyan-100",
+        indigo: "bg-indigo-50 text-indigo-600 border-indigo-100",
     };
 
     return (
