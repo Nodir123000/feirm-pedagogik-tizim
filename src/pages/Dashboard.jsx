@@ -160,17 +160,15 @@ export default function Dashboard() {
                     <div className="space-y-4 max-w-2xl">
                         <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
                             <Sparkles className="w-3 h-3 mr-2 text-yellow-300" />
-                            AI Insights
+                            {t('ai_insights')}
                         </div>
-                        <h2 className="text-2xl font-bold">Optimizing Learning Paths</h2>
+                        <h2 className="text-2xl font-bold">{t('optimizing_paths')}</h2>
                         <p className="text-indigo-100 leading-relaxed">
-                            Based on current SBCM analysis, 65% of students in the Drilling group show
-                            advanced proficiency in technical safety but need additional focus on
-                            reflective analysis milestones.
+                            {t('insight_text')}
                         </p>
                         <button className="px-6 py-2.5 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-all flex items-center gap-2">
                             <Brain className="w-5 h-5" />
-                            Generate Recommendations
+                            {t('generate_recommendations')}
                         </button>
                     </div>
                     <div className="hidden lg:block relative">

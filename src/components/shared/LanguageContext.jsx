@@ -49,6 +49,10 @@ const translations = {
         pending_review: "Tekshirilmoqda",
         attention_required: "Diqqat talab",
         at_risk_students: "Xavf ostidagi talabalar",
+        ai_insights: "AI Tahlillar",
+        optimizing_paths: "Ta'lim yo'nalishlarini optimallashtirish",
+        insight_text: "Joriy SBCM tahliliga ko'ra, Burg'ulash guruhidagi 65% talabalar texnik xavfsizlik bo'yicha yuqori natijalarni ko'rsatmoqda, ammo refleksiv tahlil bosqichlariga qo'shimcha e'tibor qaratishlari kerak.",
+        generate_recommendations: "Tavsiyalar yaratish",
         success: "Muvaffaqiyatli!",
     },
     uz_cyr: {
@@ -99,6 +103,10 @@ const translations = {
         pending_review: "Текширилмоқда",
         attention_required: "Диққат талаб",
         at_risk_students: "Хавф остидаги талабалар",
+        ai_insights: "AI Таҳлиллар",
+        optimizing_paths: "Таълим йўналишларини оптималлаштириш",
+        insight_text: "Жорий SBCM таҳлилига кўра, Бурғулаш гуруҳидаги 65% талабалар техник хавфсизлик бўйича юқори натижаларни кўрсатмоқда, аммо рефлексив таҳлил босқичларига қўшимча эътибор қаратишлари керак.",
+        generate_recommendations: "Тавсиялар яратиш",
         success: "Муваффақиятли!",
     },
     ru: {
@@ -149,6 +157,10 @@ const translations = {
         pending_review: "На проверке",
         attention_required: "Требуют внимания",
         at_risk_students: "Студенты в зоне риска",
+        ai_insights: "AI Аналитика",
+        optimizing_paths: "Оптимизация траекторий обучения",
+        insight_text: "На основе текущего анализа SBCM, 65% студентов группы Бурения показывают высокую компетентность в технической безопасности, но требуют дополнительного внимания к рефлексивному анализу.",
+        generate_recommendations: "Сгенерировать рекомендации",
         success: "Успешно!",
     }
 };
