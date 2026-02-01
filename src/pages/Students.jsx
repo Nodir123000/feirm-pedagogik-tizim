@@ -15,7 +15,10 @@ import {
     Gamepad2,
     TrendingUp,
     MessageSquare,
-    AlertTriangle
+    AlertTriangle,
+    Eye,
+    Edit,
+    Trash2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/components/shared/LanguageContext';
@@ -314,21 +317,32 @@ export default function Students() {
                                             <span className="font-bold text-emerald-600">{student.meta_competency || 0}%</span>
                                         </TableCell>
                                         <TableCell>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" className="h-8 w-8 p-0">
-                                                        <span className="sr-only">Open menu</span>
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>{t('action')}</DropdownMenuLabel>
-                                                    <DropdownMenuItem>{t('view_profile')}</DropdownMenuItem>
-                                                    <DropdownMenuItem>{t('edit_details')}</DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem className="text-red-600">{t('delete_student')}</DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
+                                            <div className="flex items-center justify-center gap-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                    title={t('view_profile')}
+                                                >
+                                                    <Eye className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                                                    title={t('edit_details')}
+                                                >
+                                                    <Edit className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                    title={t('delete_student')}
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 );
