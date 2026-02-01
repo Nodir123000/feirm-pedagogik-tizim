@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchSimulationScenarios, deleteSimulationScenario } from '@/entities/SimulationScenario';
 import { fetchSimulationResults } from '@/entities/SimulationResult';
+import { useLanguage } from '@/components/shared/LanguageContext';
 import {
     Gamepad2,
     Search,
@@ -21,13 +22,13 @@ import {
 import { cn } from '@/lib/utils';
 
 export default function Simulations() {
+    const { language } = useLanguage();
     const [scenarios, setScenarios] = useState([]);
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDifficulty, setFilterDifficulty] = useState('All');
-    const [language, setLanguage] = useState('uz_lat');
 
     const loadData = async () => {
         setLoading(true);
@@ -72,12 +73,6 @@ export default function Simulations() {
 
     const difficulties = ['All', ...new Set(scenarios.map(s => s.difficulty_level).filter(Boolean))];
 
-    const languages = [
-        { code: 'uz_lat', name: 'LOT' },
-        { code: 'uz_cyr', name: 'КИР' },
-        { code: 'ru', name: 'РУС' }
-    ];
-
     const getResultsForScenario = (scenarioId) => {
         return results.filter(r => r.scenario_id === scenarioId);
     };
@@ -95,22 +90,6 @@ export default function Simulations() {
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-gray-200 shadow-sm">
-                        {languages.map(lang => (
-                            <button
-                                key={lang.code}
-                                onClick={() => setLanguage(lang.code)}
-                                className={cn(
-                                    "px-2 py-1.5 text-[10px] font-bold rounded-md transition-all",
-                                    language === lang.code
-                                        ? "bg-purple-600 text-white shadow-sm"
-                                        : "text-gray-500 hover:bg-gray-100"
-                                )}
-                            >
-                                {lang.name}
-                            </button>
-                        ))}
-                    </div>
                     <button className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-sm font-medium">
                         <Plus className="w-4 h-4 mr-2" />
                         New Scenario
