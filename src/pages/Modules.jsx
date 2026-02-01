@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchLearningModules, deleteLearningModule } from '@/entities/LearningModule';
+import { useLanguage } from '@/components/shared/LanguageContext';
 import {
     BookOpen,
     Search,
@@ -12,17 +13,18 @@ import {
     Loader2,
     Clock,
     BarChart,
-    ChevronRight
+    ChevronRight,
+    Languages
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function Modules() {
+    const { language } = useLanguage();
     const [modules, setModules] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('All');
-    const [language, setLanguage] = useState('uz_lat'); // Default language
 
     const loadModules = async () => {
         setLoading(true);
@@ -63,12 +65,6 @@ export default function Modules() {
 
     const types = ['All', ...new Set(modules.map(m => m.module_type).filter(Boolean))];
 
-    const languages = [
-        { code: 'uz_lat', name: 'O\'zbek (Lotin)' },
-        { code: 'uz_cyr', name: 'Ўзбек (Кирилл)' },
-        { code: 'ru', name: 'Русский' }
-    ];
-
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -82,22 +78,6 @@ export default function Modules() {
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-gray-200 shadow-sm">
-                        {languages.map(lang => (
-                            <button
-                                key={lang.code}
-                                onClick={() => setLanguage(lang.code)}
-                                className={cn(
-                                    "px-3 py-1.5 text-xs font-semibold rounded-md transition-all",
-                                    language === lang.code
-                                        ? "bg-green-600 text-white shadow-sm"
-                                        : "text-gray-600 hover:bg-gray-100"
-                                )}
-                            >
-                                {lang.code.toUpperCase().replace('_', ' ')}
-                            </button>
-                        ))}
-                    </div>
                     <button className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm font-medium">
                         <Plus className="w-4 h-4 mr-2" />
                         Add Module
