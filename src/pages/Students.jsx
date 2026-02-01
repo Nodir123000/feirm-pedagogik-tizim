@@ -268,8 +268,10 @@ export default function Students() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredStudents.map((student) => {
+                            {filteredStudents.map((student, index) => {
                                 const avgProgress = calculateAvgProgress(student);
+                                const displayId = student.student_id || `ST-${1000 + index}`;
+
                                 return (
                                     <TableRow key={student.id}>
                                         <TableCell>
@@ -282,7 +284,7 @@ export default function Students() {
                                                 </Avatar>
                                                 <div className="flex flex-col">
                                                     <span className="font-medium text-gray-900">{student.full_name}</span>
-                                                    <span className="text-xs text-gray-500">{student.student_id ? `ID: ${student.student_id}` : 'No ID'}</span>
+                                                    <span className="text-xs text-gray-500">ID: {displayId}</span>
                                                 </div>
                                             </div>
                                         </TableCell>
@@ -299,7 +301,7 @@ export default function Students() {
                                         <TableCell className="w-[200px]">
                                             <div className="grid gap-1">
                                                 <div className="flex items-center justify-between text-xs">
-                                                    <span className="text-gray-500">Overall</span>
+                                                    <span className="text-gray-500">{t('overall_label')}</span>
                                                     <span className="font-medium text-gray-900">{avgProgress}%</span>
                                                 </div>
                                                 <Progress value={avgProgress} className="h-2" />
@@ -320,11 +322,11 @@ export default function Students() {
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuItem>View Profile</DropdownMenuItem>
-                                                    <DropdownMenuItem>Edit Details</DropdownMenuItem>
+                                                    <DropdownMenuLabel>{t('action')}</DropdownMenuLabel>
+                                                    <DropdownMenuItem>{t('view_profile')}</DropdownMenuItem>
+                                                    <DropdownMenuItem>{t('edit_details')}</DropdownMenuItem>
                                                     <DropdownMenuSeparator />
-                                                    <DropdownMenuItem className="text-red-600">Delete Student</DropdownMenuItem>
+                                                    <DropdownMenuItem className="text-red-600">{t('delete_student')}</DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
