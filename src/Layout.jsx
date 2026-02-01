@@ -86,11 +86,11 @@ export default function Layout() {
                         <LanguageSwitcher />
                         <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                             <div className="text-right hidden sm:block">
-                                <p className="text-sm font-medium text-gray-900">Admin User</p>
-                                <p className="text-xs text-gray-500">Administrator</p>
+                                <p className="text-sm font-medium text-gray-900">А.О.Абдуллаева</p>
+                                <p className="text-xs text-gray-500">Администратор</p>
                             </div>
                             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                AU
+                                АА
                             </div>
                         </div>
                     </div>
