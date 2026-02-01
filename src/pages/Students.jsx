@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { fetchStudents } from '@/entities/Student';
+import { useNavigate } from 'react-router-dom';
+import { fetchStudents, deleteStudent } from '@/entities/Student';
 import { fetchLearningModules } from '@/entities/LearningModule';
 import { fetchSimulationScenarios } from '@/entities/SimulationScenario';
 import { fetchReflections } from '@/entities/Reflection';
