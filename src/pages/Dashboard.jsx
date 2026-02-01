@@ -63,12 +63,12 @@ export default function Dashboard() {
                 students: students.length,
                 activeStudents: Math.round(students.length * 0.85), // Client-side calculation/mock
                 modules: modules.length,
-                activeModules: modules.filter(m => m.status === 'published').length || modules.length, // Fallback if no status
+                activeModules: modules.filter(m => m.is_active).length,
                 simulations: simulations.length,
                 complexScenarios: simulations.filter(s => s.difficulty_level === 'Hard').length,
                 avgProgress: avgProg,
                 reflections: reflections.length,
-                pendingReflections: 2, // Mock for now as status might not exist
+                pendingReflections: 2, // Mock for now
                 atRiskStudents: atRisk
             });
         } catch (error) {
@@ -109,7 +109,7 @@ export default function Dashboard() {
                 <StatCard
                     title={t('active_modules')}
                     value={stats.modules}
-                    subtitle={`${stats.activeModules} ${t('published')}`}
+                    subtitle={`${stats.activeModules} ${t('active')}`}
                     icon={BookOpen}
                     color="emerald"
                     trend={5}
