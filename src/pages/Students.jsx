@@ -228,7 +228,9 @@ export default function Students() {
                             onChange={(e) => setFilterGroup(e.target.value)}
                         >
                             {groups.map(group => (
-                                <option key={group} value={group}>{group}</option>
+                                <option key={group} value={group}>
+                                    {group === 'All' ? t('all_groups') : group}
+                                </option>
                             ))}
                         </select>
                     </div>

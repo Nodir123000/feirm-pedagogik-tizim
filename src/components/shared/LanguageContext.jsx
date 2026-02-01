@@ -60,6 +60,7 @@ const translations = {
         prof_comp_short: "Kasbiy komp.",
         meta_comp_short: "Metakomp.",
         action: "Amal",
+        all_groups: "Barcha guruhlar",
         success: "Muvaffaqiyatli!",
     },
     uz_cyr: {
@@ -121,6 +122,7 @@ const translations = {
         prof_comp_short: "Касбий комп.",
         meta_comp_short: "Метакомп.",
         action: "Амал",
+        all_groups: "Барча гуруҳлар",
         success: "Муваффақиятли!",
     },
     ru: {
@@ -182,6 +184,7 @@ const translations = {
         prof_comp_short: "Проф. комп.",
         meta_comp_short: "Мета комп.",
         action: "Действие",
+        all_groups: "Все группы",
         success: "Успешно!",
     }
 };
