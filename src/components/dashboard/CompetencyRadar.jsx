@@ -1,0 +1,1 @@
+// CompetencyRadar component
