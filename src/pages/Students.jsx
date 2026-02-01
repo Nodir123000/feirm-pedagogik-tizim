@@ -256,13 +256,13 @@ export default function Students() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[250px]">Student</TableHead>
-                                <TableHead>Group</TableHead>
-                                <TableHead>Specialization</TableHead>
-                                <TableHead>Progress</TableHead>
-                                <TableHead className="text-right">Prof. Comp.</TableHead>
-                                <TableHead className="text-right">Meta Comp.</TableHead>
-                                <TableHead className="w-[50px] text-center">Действие</TableHead>
+                                <TableHead className="w-[250px]">{t('student_name')}</TableHead>
+                                <TableHead>{t('group')}</TableHead>
+                                <TableHead>{t('specialization')}</TableHead>
+                                <TableHead>{t('overall_progress')}</TableHead>
+                                <TableHead className="text-right">{t('prof_comp_short')}</TableHead>
+                                <TableHead className="text-right">{t('meta_comp_short')}</TableHead>
+                                <TableHead className="w-[50px] text-center">{t('action')}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
