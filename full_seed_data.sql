@@ -10,15 +10,15 @@ ADD COLUMN IF NOT EXISTS student_group_id TEXT; -- For internal mapping if neede
 -- 2. Clear existing data and seed all 8 students
 TRUNCATE students CASCADE;
 
-INSERT INTO students (full_name, student_group, specialization, professional_competency, meta_competency, motivation_level, reflective_skills, progress, status) VALUES
-('Sattorov Sardorbek', 'NG-2021-01', 'drilling', 85, 70, 75, 60, 75, 'Active'),
-('Karimova Malika', 'NG-2021-01', 'geology', 92, 80, 85, 70, 84, 'Active'),
-('Islomov Jasur', 'NG-2021-02', 'production', 65, 55, 60, 50, 58, 'Active'),
-('Abduvaliyeva Shaxnoza', 'NG-2021-02', 'processing', 78, 85, 80, 75, 80, 'Active'),
-('Xasanov Dilshod', 'NG-2022-01', 'transportation', 45, 50, 70, 40, 42, 'Active'),
-('Yoqubova Nigora', 'NG-2022-01', 'drilling', 60, 65, 75, 55, 55, 'Active'),
-('Umarov Farrux', 'NG-2022-02', 'production', 88, 72, 82, 68, 78, 'Active'),
-('Soliyeva Barno', 'NG-2022-02', 'geology', 95, 88, 90, 85, 92, 'Active');
+INSERT INTO students (full_name, student_group, specialization, professional_competency, meta_competency, motivation_level, reflective_skills, progress, status, avatar_url) VALUES
+('Sattorov Sardorbek', 'NG-2021-01', 'drilling', 85, 70, 75, 60, 75, 'Active', 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200&h=200'),
+('Karimova Malika', 'NG-2021-01', 'geology', 92, 80, 85, 70, 84, 'Active', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200&h=200'),
+('Islomov Jasur', 'NG-2021-02', 'production', 65, 55, 60, 50, 58, 'Active', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200&h=200'),
+('Abduvaliyeva Shaxnoza', 'NG-2021-02', 'processing', 78, 85, 80, 75, 80, 'Active', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=200&h=200'),
+('Xasanov Dilshod', 'NG-2022-01', 'transportation', 45, 50, 70, 40, 42, 'Active', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200&h=200'),
+('Yoqubova Nigora', 'NG-2022-01', 'drilling', 60, 65, 75, 55, 55, 'Active', 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=200&h=200'),
+('Umarov Farrux', 'NG-2022-02', 'production', 88, 72, 82, 68, 78, 'Active', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200&h=200'),
+('Soliyeva Barno', 'NG-2022-02', 'geology', 95, 88, 90, 85, 92, 'Active', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200&h=200');
 
 -- 3. Seed additional Learning Modules (to match Base44's 6 modules)
 TRUNCATE learning_modules CASCADE;
