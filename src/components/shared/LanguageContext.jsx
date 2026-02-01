@@ -2,18 +2,19 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const translations = {
     uz_lat: {
-        // Navigation
         dashboard: "Bosh sahifa",
-        modules: "O'quv modullari",
         students: "Talabalar",
-        facilitators: "Fasilitatorlar",
+        modules: "O'quv modullari",
+        simulations: "Simulyatsiyalar",
         portfolio: "Portfolio",
+        reflections: "Refleksiya",
+        trajectories: "Traektoriyalar",
+        facilitators: "Fasilitatorlar",
         monitoring: "Monitoring",
-        settings: "Sozlamalar",
-
-        // Common
+        sbcm: "SBCM Model",
+        content_gen: "Kontent Generator",
         welcome: "Xush kelibsiz",
-        search: "Qidirish",
+        search: "Qidirish...",
         filter: "Filtrlash",
         save: "Saqlash",
         cancel: "Bekor qilish",
@@ -23,92 +24,40 @@ const translations = {
         view: "Ko'rish",
         back: "Orqaga",
         next: "Keyingi",
-        previous: "Oldingi",
-        submit: "Yuborish",
         loading: "Yuklanmoqda...",
-
-        // FEIRM specific
         feirm_title: "FEIRM - Facilitator-Enhanced Instructional Role Model",
         feirm_subtitle: "Neft-gaz sohasida innovatsion pedagogik tizim",
         professional_competency: "Kasbiy kompetensiya",
-        meta_competency: "Metapredmet kompetensiyalar",
+        meta_competency: "Metakompetensiya",
         motivation_level: "Motivatsiya darajasi",
         reflective_skills: "Refleksiv ko'nikmalar",
-
-        // Module types
-        simulation: "Simulyatsiya",
-        case_study: "Keys-stadi",
-        project: "Loyiha",
-        laboratory: "Laboratoriya",
-        theory: "Nazariya",
-
-        // Assessment types
-        self_assessment: "O'z-o'zini baholash",
-        peer_assessment: "O'zaro baholash",
-        facilitator_assessment: "Fasilitator bahosi",
-        automated_assessment: "Avtomatik baholash",
-
-        // Specializations
         drilling: "Burg'ulash",
         production: "Ishlab chiqarish",
         processing: "Qayta ishlash",
         transportation: "Tashish",
         geology: "Geologiya",
-
-        // Difficulty levels
-        beginner: "Boshlang'ich",
-        intermediate: "O'rta",
-        advanced: "Yuqori",
-
-        // Stats
         total_students: "Jami talabalar",
         active_modules: "Faol modullar",
-        completed_assessments: "Bajarilgan baholashlar",
-        average_progress: "O'rtacha progress",
-
-        // Roles
-        facilitator: "Fasilitator",
-        moderator: "Moderator",
-        coordinator: "Koordinator",
-        mentor: "Mentor",
-
-        // Messages
+        average_progress: "O'rtacha natija",
+        progress_tracking: "Natijalar tahlili",
+        competency_analysis: "Kompetensiyalar tahlili",
         no_data: "Ma'lumot topilmadi",
         success: "Muvaffaqiyatli!",
-        error: "Xatolik yuz berdi",
-        confirm_delete: "O'chirishni tasdiqlaysizmi?",
-
-        // MPMS
-        mpms_title: "MPMS - Ko'p darajali pedagogik monitoring tizimi",
-        progress_tracking: "Progress kuzatuvi",
-        competency_analysis: "Kompetensiya tahlili",
-        reflective_session: "Refleksiv sessiya",
-
-        // SBCM
-        sbcm: "SBCM",
-        sbcm_full: "Simulation-Based Competency Model",
-
-        // New sections
-        trajectories: "Traektoriyalar",
-        simulations: "Simulyatsiyalar",
-        reflections: "Refleksiyalar",
-        analytics: "Analitika",
-        content_gen: "Kontent generatori",
     },
-
     uz_cyr: {
-        // Navigation
         dashboard: "Бош саҳифа",
-        modules: "Ўқув модуллари",
         students: "Талабалар",
-        facilitators: "Фасилитаторлар",
+        modules: "Ўқув моделлари",
+        simulations: "Симуляциялар",
         portfolio: "Портфолио",
+        reflections: "Рефлексия",
+        trajectories: "Траекториялар",
+        facilitators: "Фасилитаторлар",
         monitoring: "Мониторинг",
-        settings: "Созламалар",
-
-        // Common
+        sbcm: "SBCM Модели",
+        content_gen: "Контент Генератор",
         welcome: "Хуш келибсиз",
-        search: "Қидириш",
+        search: "Қидириш...",
         filter: "Фильтрлаш",
         save: "Сақлаш",
         cancel: "Бекор қилиш",
@@ -118,92 +67,40 @@ const translations = {
         view: "Кўриш",
         back: "Орқага",
         next: "Кейинги",
-        previous: "Олдинги",
-        submit: "Юбориш",
         loading: "Юкланмоқда...",
-
-        // FEIRM specific
         feirm_title: "FEIRM - Facilitator-Enhanced Instructional Role Model",
         feirm_subtitle: "Нефт-газ соҳасида инновацион педагогик тизим",
-        professional_competency: "Касбий компетенсия",
-        meta_competency: "Метапредмет компетенсиялар",
+        professional_competency: "Касбий компетенция",
+        meta_competency: "Метакомпетенция",
         motivation_level: "Мотивация даражаси",
         reflective_skills: "Рефлексив кўникмалар",
-
-        // Module types
-        simulation: "Симуляция",
-        case_study: "Кейс-стади",
-        project: "Лойиҳа",
-        laboratory: "Лаборатория",
-        theory: "Назария",
-
-        // Assessment types
-        self_assessment: "Ўз-ўзини баҳолаш",
-        peer_assessment: "Ўзаро баҳолаш",
-        facilitator_assessment: "Фасилитатор баҳоси",
-        automated_assessment: "Автоматик баҳолаш",
-
-        // Specializations
         drilling: "Бурғулаш",
         production: "Ишлаб чиқариш",
         processing: "Қайта ишлаш",
         transportation: "Ташиш",
         geology: "Геология",
-
-        // Difficulty levels
-        beginner: "Бошланғич",
-        intermediate: "Ўрта",
-        advanced: "Юқори",
-
-        // Stats
         total_students: "Жами талабалар",
         active_modules: "Фаол модуллар",
-        completed_assessments: "Бажарилган баҳолашлар",
-        average_progress: "Ўртача прогресс",
-
-        // Roles
-        facilitator: "Фасилитатор",
-        moderator: "Модератор",
-        coordinator: "Координатор",
-        mentor: "Ментор",
-
-        // Messages
+        average_progress: "Ўртача натижа",
+        progress_tracking: "Натижалар таҳлили",
+        competency_analysis: "Компетенциялар таҳлили",
         no_data: "Маълумот топилмади",
         success: "Муваффақиятли!",
-        error: "Хатолик юз берди",
-        confirm_delete: "Ўчиришни тасдиқлайсизми?",
-
-        // MPMS
-        mpms_title: "MPMS - Кўп даражали педагогик мониторинг тизими",
-        progress_tracking: "Прогресс кузатуви",
-        competency_analysis: "Компетенсия таҳлили",
-        reflective_session: "Рефлексив сессия",
-
-        // SBCM
-        sbcm: "SBCM",
-        sbcm_full: "Simulation-Based Competency Model",
-
-        // New sections
-        trajectories: "Траекториялар",
-        simulations: "Симуляциялар",
-        reflections: "Рефлексиялар",
-        analytics: "Аналитика",
-        content_gen: "Контент генератори",
     },
-
     ru: {
-        // Navigation
-        dashboard: "Главная",
-        modules: "Учебные модули",
+        dashboard: "Панель управления",
         students: "Студенты",
-        facilitators: "Фасилитаторы",
+        modules: "Учебные модули",
+        simulations: "Симуляции",
         portfolio: "Портфолио",
+        reflections: "Рефлексия",
+        trajectories: "Траектории",
+        facilitators: "Фасилитаторы",
         monitoring: "Мониторинг",
-        settings: "Настройки",
-
-        // Common
+        sbcm: "SBCM Модель",
+        content_gen: "Генератор контента",
         welcome: "Добро пожаловать",
-        search: "Поиск",
+        search: "Поиск...",
         filter: "Фильтр",
         save: "Сохранить",
         cancel: "Отмена",
@@ -213,77 +110,25 @@ const translations = {
         view: "Просмотр",
         back: "Назад",
         next: "Далее",
-        previous: "Назад",
-        submit: "Отправить",
         loading: "Загрузка...",
-
-        // FEIRM specific
         feirm_title: "FEIRM - Facilitator-Enhanced Instructional Role Model",
-        feirm_subtitle: "Инновационная педагогическая система для нефтегазовой отрасли",
-        professional_competency: "Профессиональная компетентность",
-        meta_competency: "Метапредметные компетенции",
+        feirm_subtitle: "Инновационная педагогическая система",
+        professional_competency: "Проф. компетенция",
+        meta_competency: "Метакомпетентность",
         motivation_level: "Уровень мотивации",
-        reflective_skills: "Рефлексивные навыки",
-
-        // Module types
-        simulation: "Симуляция",
-        case_study: "Кейс-стади",
-        project: "Проект",
-        laboratory: "Лаборатория",
-        theory: "Теория",
-
-        // Assessment types
-        self_assessment: "Самооценка",
-        peer_assessment: "Взаимооценка",
-        facilitator_assessment: "Оценка фасилитатора",
-        automated_assessment: "Автоматическая оценка",
-
-        // Specializations
+        reflective_skills: "Рефлексия",
         drilling: "Бурение",
-        production: "Добыча",
+        production: "Производство",
         processing: "Переработка",
         transportation: "Транспортировка",
         geology: "Геология",
-
-        // Difficulty levels
-        beginner: "Начальный",
-        intermediate: "Средний",
-        advanced: "Продвинутый",
-
-        // Stats
         total_students: "Всего студентов",
-        active_modules: "Активных модулей",
-        completed_assessments: "Завершённых оценок",
+        active_modules: "Учебные модули",
         average_progress: "Средний прогресс",
-
-        // Roles
-        facilitator: "Фасилитатор",
-        moderator: "Модератор",
-        coordinator: "Координатор",
-        mentor: "Ментор",
-
-        // Messages
+        progress_tracking: "Аналитика прогресса",
+        competency_analysis: "Анализ компетенций",
         no_data: "Данные не найдены",
         success: "Успешно!",
-        error: "Произошла ошибка",
-        confirm_delete: "Подтвердите удаление",
-
-        // MPMS
-        mpms_title: "MPMS - Многоуровневая система педагогического мониторинга",
-        progress_tracking: "Отслеживание прогресса",
-        competency_analysis: "Анализ компетенций",
-        reflective_session: "Рефлексивная сессия",
-
-        // SBCM
-        sbcm: "SBCM",
-        sbcm_full: "Simulation-Based Competency Model",
-
-        // New sections
-        trajectories: "Траектории",
-        simulations: "Симуляции",
-        reflections: "Рефлексии",
-        analytics: "Аналитика",
-        content_gen: "Генератор контента",
     }
 };
 

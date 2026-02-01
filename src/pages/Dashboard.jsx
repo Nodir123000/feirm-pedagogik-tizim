@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react';
 import { fetchStudents } from '@/entities/Student';
 import { fetchLearningModules } from '@/entities/LearningModule';
-import { Users, BookOpen, Gamepad2, TrendingUp } from 'lucide-react';
+import { fetchSimulationScenarios } from '@/entities/SimulationScenario';
+import { Users, BookOpen, Gamepad2, TrendingUp, Sparkles, Brain } from 'lucide-react';
+import StatCard from '@/components/dashboard/StatCard';
+import ProgressChart from '@/components/dashboard/ProgressChart';
+import FEIRMFlowDiagram from '@/components/dashboard/FEIRMFlowDiagram';
+import CompetencyRadar from '@/components/dashboard/CompetencyRadar';
+import { useLanguage } from '@/components/shared/LanguageContext';
 
 export default function Dashboard() {
+    const { t } = useLanguage();
     const [stats, setStats] = useState({
         students: 0,
         modules: 0,
@@ -18,16 +25,21 @@ export default function Dashboard() {
 
     async function loadDashboardData() {
         try {
-            const [studentsData, modulesData] = await Promise.all([
+            const [studentsData, modulesData, simulationsData] = await Promise.all([
                 fetchStudents(),
-                fetchLearningModules()
+                fetchLearningModules(),
+                fetchSimulationScenarios()
             ]);
+
+            const avgProg = studentsData?.length
+                ? Math.round(studentsData.reduce((acc, s) => acc + (s.progress || 0), 0) / studentsData.length)
+                : 0;
 
             setStats({
                 students: studentsData?.length || 0,
                 modules: modulesData?.length || 0,
-                simulations: 0,
-                avgProgress: 75
+                simulations: simulationsData?.length || 0,
+                avgProgress: avgProg
             });
         } catch (error) {
             console.error('Error loading dashboard data:', error);
@@ -36,74 +48,86 @@ export default function Dashboard() {
         }
     }
 
-    const statCards = [
-        { name: 'Total Students', value: stats.students, icon: Users, color: 'blue' },
-        { name: 'Learning Modules', value: stats.modules, icon: BookOpen, color: 'green' },
-        { name: 'Simulations', value: stats.simulations, icon: Gamepad2, color: 'purple' },
-        { name: 'Avg Progress', value: `${stats.avgProgress}%`, icon: TrendingUp, color: 'orange' },
-    ];
-
     if (loading) {
         return (
             <div className="flex items-center justify-center h-96">
-                <div className="text-lg text-gray-600">Loading dashboard...</div>
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-lg font-medium text-gray-600">{t('loading')}</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8 pb-12">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p className="mt-2 text-gray-600">FEIRM Pedagogik Tizim - Overview</p>
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{t('dashboard')}</h1>
+                <p className="mt-2 text-gray-600">{t('feirm_subtitle')}</p>
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {statCards.map((stat) => {
-                    const Icon = stat.icon;
-                    return (
-                        <div key={stat.name} className="bg-white rounded-lg shadow p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">{stat.name}</p>
-                                    <p className="mt-2 text-3xl font-semibold text-gray-900">{stat.value}</p>
-                                </div>
-                                <div className={`p-3 bg-${stat.color}-100 rounded-lg`}>
-                                    <Icon className={`w-6 h-6 text-${stat.color}-600`} />
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
+                <StatCard
+                    title={t('total_students')}
+                    value={stats.students}
+                    icon={Users}
+                    color="blue"
+                    trend={12}
+                />
+                <StatCard
+                    title={t('active_modules')}
+                    value={stats.modules}
+                    icon={BookOpen}
+                    color="emerald"
+                    trend={5}
+                />
+                <StatCard
+                    title={t('simulations')}
+                    value={stats.simulations}
+                    icon={Gamepad2}
+                    color="violet"
+                />
+                <StatCard
+                    title={t('average_progress')}
+                    value={`${stats.avgProgress}%`}
+                    icon={TrendingUp}
+                    color="amber"
+                    trend={8}
+                />
             </div>
 
-            {/* Welcome Section */}
-            <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Welcome to FEIRM System</h2>
-                <p className="text-gray-600 mb-4">
-                    This is a demonstration of the FEIRM (Flexible Educational Individual Reflective Module)
-                    pedagogical system. The system supports personalized learning trajectories, competency-based
-                    assessment, and reflective learning practices.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                    <div className="p-4 bg-blue-50 rounded-lg">
-                        <h3 className="font-semibold text-blue-900 mb-2">Multilingual Support</h3>
-                        <p className="text-sm text-blue-700">
-                            Content available in Uzbek (Latin), Uzbek (Cyrillic), and Russian
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Visual Analytics */}
+                <ProgressChart title={t('progress_tracking')} />
+                <CompetencyRadar />
+            </div>
+
+            {/* FEIRM Flow Diagram */}
+            <FEIRMFlowDiagram />
+
+            {/* AI Insights (Mock for now to match UI) */}
+            <div className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl shadow-xl p-8 text-white">
+                <div className="flex items-start justify-between">
+                    <div className="space-y-4 max-w-2xl">
+                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
+                            <Sparkles className="w-3 h-3 mr-2 text-yellow-300" />
+                            AI Insights
+                        </div>
+                        <h2 className="text-2xl font-bold">Optimizing Learning Paths</h2>
+                        <p className="text-indigo-100 leading-relaxed">
+                            Based on current SBCM analysis, 65% of students in the Drilling group show
+                            advanced proficiency in technical safety but need additional focus on
+                            reflective analysis milestones.
                         </p>
+                        <button className="px-6 py-2.5 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-all flex items-center gap-2">
+                            <Brain className="w-5 h-5" />
+                            Generate Recommendations
+                        </button>
                     </div>
-                    <div className="p-4 bg-green-50 rounded-lg">
-                        <h3 className="font-semibold text-green-900 mb-2">AI-Powered Recommendations</h3>
-                        <p className="text-sm text-green-700">
-                            Personalized learning paths based on student competencies
-                        </p>
-                    </div>
-                    <div className="p-4 bg-purple-50 rounded-lg">
-                        <h3 className="font-semibold text-purple-900 mb-2">Simulation-Based Learning</h3>
-                        <p className="text-sm text-purple-700">
-                            Industry-relevant scenarios for practical skill development
-                        </p>
+                    <div className="hidden lg:block relative">
+                        <div className="w-32 h-32 bg-white/10 rounded-full blur-3xl absolute -top-10 -right-10"></div>
+                        <Sparkles className="w-24 h-24 text-white/10" />
                     </div>
                 </div>
             </div>
