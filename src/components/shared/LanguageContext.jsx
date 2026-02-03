@@ -114,7 +114,6 @@ const translations = {
         core_modules: "Asosiy modullar",
         specialized_modules: "Maxsus modullar",
         paused: "To'xtatilgan",
-        active: "Faol",
         inactive: "Faol emas",
         only: "faqat",
         analyze: "Tahlil qilish",
@@ -690,7 +689,6 @@ const translations = {
         core_modules: "Асосий модуллар",
         specialized_modules: "Махсус модуллар",
         paused: "Тўхтатилган",
-        active: "Фаол",
         inactive: "Фаол эмас",
         only: "фақат",
         analysis_results: "Таҳлил натижалари",
@@ -1683,7 +1681,6 @@ const translations = {
         statistics: "Статистика",
         avg_rating: "Средний рейтинг",
         completion: "Завершение",
-        students: "Студенты",
     },
     en: {
         academic_throughput: "Academic Throughput",
