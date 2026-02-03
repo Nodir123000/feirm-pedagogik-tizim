@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { fetchStudents } from '@/entities/Student';
 import { fetchAssessments } from '@/entities/Assessment';
 import { fetchSimulationResults } from '@/entities/SimulationResult';
+import { fetchReflections } from '@/entities/Reflection';
+import { useLanguage } from '../components/shared/LanguageContext';
 import {
     BarChart3,
     Search,
@@ -16,7 +18,9 @@ import {
     LineChart,
     ShieldCheck,
     Zap,
-    Globe
+    Globe,
+    Gamepad2,
+    MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -33,12 +37,15 @@ import {
     AreaChart,
     Area
 } from 'recharts';
+import StatCard from '@/components/dashboard/StatCard';
 
 export default function Monitoring() {
+    const { t } = useLanguage();
     const [data, setData] = useState({
         students: [],
         assessments: [],
-        simulations: []
+        simulations: [],
+        reflections: []
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,15 +54,17 @@ export default function Monitoring() {
         setLoading(true);
         setError(null);
         try {
-            const [studentsData, assessmentsData, simulationsData] = await Promise.all([
+            const [studentsData, assessmentsData, simulationsData, reflectionsData] = await Promise.all([
                 fetchStudents(),
                 fetchAssessments(),
-                fetchSimulationResults()
+                fetchSimulationResults(),
+                fetchReflections()
             ]);
             setData({
                 students: studentsData || [],
                 assessments: assessmentsData || [],
-                simulations: simulationsData || []
+                simulations: simulationsData || [],
+                reflections: reflectionsData || []
             });
         } catch (err) {
             console.error('Failed to load monitoring data:', err);
@@ -87,10 +96,10 @@ export default function Monitoring() {
         : 0;
 
     const chartData = [
-        { name: 'Theory', value: parseFloat(avgAssessmentScore) },
-        { name: 'Practice', value: parseFloat(avgSimulationScore) },
-        { name: 'Soft Skills', value: 72 },
-        { name: 'Research', value: 64 },
+        { name: t('type_theory') || 'Theory', value: parseFloat(avgAssessmentScore) },
+        { name: t('type_practice') || 'Practice', value: parseFloat(avgSimulationScore) },
+        { name: t('type_SoftSkills') || 'Soft Skills', value: 72 },
+        { name: t('research') || 'Research', value: 64 },
     ];
 
     return (
@@ -100,10 +109,10 @@ export default function Monitoring() {
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
                         <BarChart3 className="w-8 h-8 text-blue-600" />
-                        MPMS Dashboard
+                        {t('mpms_dashboard')}
                     </h1>
                     <p className="mt-1 text-gray-600">
-                        Monitoring Pedagogic Management System: Real-time system health and academic KPI tracking.
+                        {t('monitoring_subtitle')}
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -114,7 +123,7 @@ export default function Monitoring() {
                                 "bg-blue-50 border-blue-100 text-blue-700"
                     )}>
                         <div className={cn("w-2 h-2 rounded-full animate-pulse", `bg-${status.color}-600`)} />
-                        <span className="text-xs font-black uppercase tracking-widest">System {status.label}</span>
+                        <span className="text-xs font-black uppercase tracking-widest">{t('system_optimal')}</span>
                     </div>
                     <button
                         onClick={loadData}
@@ -132,59 +141,54 @@ export default function Monitoring() {
                 </div>
             ) : (
                 <div className="space-y-6">
-                    {/* Quick Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-                                    <Activity className="w-5 h-5" />
-                                </div>
-                                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5">
-                                    <TrendingUp className="w-3 h-3" /> +12%
-                                </span>
-                            </div>
-                            <p className="text-sm font-medium text-gray-500">Academic Throughput</p>
-                            <p className="text-2xl font-black text-gray-900 mt-1">{avgAssessmentScore}%</p>
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-600 opacity-20 group-hover:opacity-100 transition-opacity" />
-                        </div>
-
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="p-2 bg-purple-50 text-purple-600 rounded-lg">
-                                    <Zap className="w-5 h-5" />
-                                </div>
-                                <span className="text-xs font-bold text-emerald-600 flex items-center gap-0.5">
-                                    <TrendingUp className="w-3 h-3" /> +8%
-                                </span>
-                            </div>
-                            <p className="text-sm font-medium text-gray-500">Practical Proficiency</p>
-                            <p className="text-2xl font-black text-gray-900 mt-1">{avgSimulationScore}%</p>
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg-purple-600 opacity-20 group-hover:opacity-100 transition-opacity" />
-                        </div>
-
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-                                    <Clock className="w-5 h-5" />
-                                </div>
-                                <span className="text-xs font-bold text-gray-400 font-medium">Synced 1m ago</span>
-                            </div>
-                            <p className="text-sm font-medium text-gray-500">Total Assessments</p>
-                            <p className="text-2xl font-black text-gray-900 mt-1">{data.assessments.length}</p>
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg-amber-600 opacity-20 group-hover:opacity-100 transition-opacity" />
-                        </div>
-
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-                                    <Globe className="w-5 h-5" />
-                                </div>
-                                <span className="text-xs font-bold text-blue-600 uppercase">Live</span>
-                            </div>
-                            <p className="text-sm font-medium text-gray-500">Active Students</p>
-                            <p className="text-2xl font-black text-gray-900 mt-1">{data.students.length}</p>
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg-indigo-600 opacity-20 group-hover:opacity-100 transition-opacity" />
-                        </div>
+                    {/* Metrics Grid - 6 Panels (Students Style) */}
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-8">
+                        <StatCard
+                            title={t('active_students')}
+                            value={data.students.length}
+                            subtitle={t('live')}
+                            icon={Globe}
+                            color="blue"
+                            trend={12}
+                        />
+                        <StatCard
+                            title={t('academic_throughput')}
+                            value={`${avgAssessmentScore}%`}
+                            subtitle={t('global_indicator')}
+                            icon={Activity}
+                            color="emerald"
+                            trend={5}
+                        />
+                        <StatCard
+                            title={t('practical_proficiency')}
+                            value={`${avgSimulationScore}%`}
+                            subtitle={t('global_indicator')}
+                            icon={Zap}
+                            color="violet"
+                            trend={8}
+                        />
+                        <StatCard
+                            title={t('total_assessments')}
+                            value={data.assessments.length}
+                            subtitle={t('synced')}
+                            icon={Clock}
+                            color="amber"
+                        />
+                        <StatCard
+                            title={t('simulations')}
+                            value={data.simulations.length}
+                            subtitle={t('finished')}
+                            icon={Gamepad2}
+                            color="indigo"
+                        />
+                        <StatCard
+                            title={t('system_activity')}
+                            value={data.reflections.length}
+                            subtitle={t('reflections')}
+                            icon={MessageSquare}
+                            color="rose"
+                            trend={15}
+                        />
                     </div>
 
                     {/* Charts Row */}
@@ -192,8 +196,8 @@ export default function Monitoring() {
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h3 className="font-bold text-gray-900">Competency Map</h3>
-                                    <p className="text-xs text-gray-500">Average scores by competency area</p>
+                                    <h3 className="font-bold text-gray-900">{t('competency_map')}</h3>
+                                    <p className="text-xs text-gray-500">{t('competency_map_subtitle')}</p>
                                 </div>
                                 <PieChart className="w-5 h-5 text-gray-300" />
                             </div>
@@ -231,8 +235,8 @@ export default function Monitoring() {
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h3 className="font-bold text-gray-900">System Activity</h3>
-                                    <p className="text-xs text-gray-500">Daily assessment/simulation throughput</p>
+                                    <h3 className="font-bold text-gray-900">{t('system_activity')}</h3>
+                                    <p className="text-xs text-gray-500">{t('system_activity_subtitle')}</p>
                                 </div>
                                 <LineChart className="w-5 h-5 text-gray-300" />
                             </div>
@@ -280,7 +284,7 @@ export default function Monitoring() {
                     {/* System Logs / Recent Alerts */}
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
                         <div className="p-6 border-b border-gray-50">
-                            <h3 className="font-bold text-gray-900">System Activity Log</h3>
+                            <h3 className="font-bold text-gray-900">{t('system_activity_log')}</h3>
                         </div>
                         <div className="divide-y divide-gray-50">
                             {[
@@ -298,7 +302,7 @@ export default function Monitoring() {
                                             <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{log.time}</p>
                                         </div>
                                     </div>
-                                    <button className="text-xs font-bold text-gray-400 hover:text-blue-600 transition-colors uppercase tracking-tight">Inspect</button>
+                                    <button className="text-xs font-bold text-gray-400 hover:text-blue-600 transition-colors uppercase tracking-tight">{t('inspect')}</button>
                                 </div>
                             ))}
                         </div>

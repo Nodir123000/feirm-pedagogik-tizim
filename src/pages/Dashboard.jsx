@@ -17,7 +17,11 @@ import StatCard from '@/components/dashboard/StatCard';
 import ProgressChart from '@/components/dashboard/ProgressChart';
 import FEIRMFlowDiagram from '@/components/dashboard/FEIRMFlowDiagram';
 import CompetencyRadar from '@/components/dashboard/CompetencyRadar';
+import SBCMComponents from '@/components/dashboard/SBCMComponents';
+import AIRecommendations from '@/components/dashboard/AIRecommendations';
+import MPMSMonitoring from '@/components/dashboard/MPMSMonitoring';
 import { useLanguage } from '@/components/shared/LanguageContext';
+import { getSBCMDemoData, getMPMSDemoData, getAIRecommendations } from '@/lib/dissertationDemoData';
 
 export default function Dashboard() {
     const { t } = useLanguage();
@@ -34,6 +38,11 @@ export default function Dashboard() {
         atRiskStudents: 0
     });
     const [loading, setLoading] = useState(true);
+
+    // Demo data for dissertation concepts
+    const sbcmData = getSBCMDemoData();
+    const mpmsData = getMPMSDemoData();
+    const aiRecommendations = getAIRecommendations();
 
     useEffect(() => {
         loadDashboardData();
@@ -104,7 +113,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className="space-y-2 max-w-3xl">
-                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight whitespace-nowrap">
                             {t('feirm_title')}
                         </h1>
                         <p className="text-blue-100/80 text-lg">
@@ -114,28 +123,28 @@ export default function Dashboard() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
                         {/* Card 1: Facilitator */}
-                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all duration-300 hover:-translate-y-1 cursor-default">
                             <Users className="w-6 h-6 text-blue-300 mb-2" />
                             <h3 className="font-semibold text-white">{t('hero_facilitator')}</h3>
                             <p className="text-xs text-blue-100/70 mt-1">{t('hero_facilitator_desc')}</p>
                         </div>
 
                         {/* Card 2: Simulation */}
-                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all duration-300 hover:-translate-y-1 cursor-default">
                             <Sparkles className="w-6 h-6 text-indigo-300 mb-2" />
                             <h3 className="font-semibold text-white">{t('hero_simulation')}</h3>
                             <p className="text-xs text-blue-100/70 mt-1">{t('hero_simulation_desc')}</p>
                         </div>
 
                         {/* Card 3: Trajectories */}
-                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all duration-300 hover:-translate-y-1 cursor-default">
                             <TrendingUp className="w-6 h-6 text-amber-300 mb-2" />
                             <h3 className="font-semibold text-white">{t('hero_trajectories')}</h3>
                             <p className="text-xs text-blue-100/70 mt-1">{t('hero_trajectories_desc')}</p>
                         </div>
 
                         {/* Card 4: Monitoring */}
-                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-colors">
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all duration-300 hover:-translate-y-1 cursor-default">
                             <Brain className="w-6 h-6 text-emerald-300 mb-2" />
                             <h3 className="font-semibold text-white">{t('hero_monitoring')}</h3>
                             <p className="text-xs text-blue-100/70 mt-1">{t('hero_monitoring_desc')}</p>
@@ -199,32 +208,29 @@ export default function Dashboard() {
                 <CompetencyRadar />
             </div>
 
+            {/* Dissertation Concepts Section */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold text-gray-900">{t('dissertation_concepts')}</h2>
+                    <span className="text-sm text-gray-500">SBCM • MPMS • AI • FEIRM</span>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* SBCM Components */}
+                    <SBCMComponents data={sbcmData} />
+
+                    {/* AI Recommendations */}
+                    <AIRecommendations recommendations={aiRecommendations} />
+
+                    {/* MPMS Monitoring */}
+                    <MPMSMonitoring data={mpmsData} />
+                </div>
+            </div>
+
             {/* FEIRM Flow Diagram */}
             <FEIRMFlowDiagram />
 
-            {/* AI Insights */}
-            <div className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl shadow-xl p-8 text-white">
-                <div className="flex items-start justify-between">
-                    <div className="space-y-4 max-w-2xl">
-                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
-                            <Sparkles className="w-3 h-3 mr-2 text-yellow-300" />
-                            {t('ai_insights')}
-                        </div>
-                        <h2 className="text-2xl font-bold">{t('optimizing_paths')}</h2>
-                        <p className="text-indigo-100 leading-relaxed">
-                            {t('insight_text')}
-                        </p>
-                        <button className="px-6 py-2.5 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-all flex items-center gap-2">
-                            <Brain className="w-5 h-5" />
-                            {t('generate_recommendations')}
-                        </button>
-                    </div>
-                    <div className="hidden lg:block relative">
-                        <div className="w-32 h-32 bg-white/10 rounded-full blur-3xl absolute -top-10 -right-10"></div>
-                        <Sparkles className="w-24 h-24 text-white/10" />
-                    </div>
-                </div>
-            </div>
+
         </div>
     );
 }

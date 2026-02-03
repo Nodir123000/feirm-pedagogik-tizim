@@ -32,13 +32,18 @@ INSERT INTO learning_modules (title_uz_lat, title_ru, module_type, duration_hour
 
 -- 4. Seed some Trajectories
 TRUNCATE trajectories CASCADE;
-INSERT INTO trajectories (student_id, trajectory_name, current_stage, progress_percentage, status, ai_recommendations) 
+INSERT INTO trajectories (student_id, trajectory_name_uz_lat, trajectory_name_ru, current_stage, progress_percentage, status, ai_recommendations) 
 SELECT 
     id, 
     CASE 
         WHEN specialization = 'drilling' THEN 'Burg''ulash mutaxassisi yo''li'
         WHEN specialization = 'geology' THEN 'Geolog-tadqiqotchi yo''li'
         ELSE 'Umumiy muhandislik traektoriyasi'
+    END,
+    CASE 
+        WHEN specialization = 'drilling' THEN 'Путь специалиста по бурению'
+        WHEN specialization = 'geology' THEN 'Путь геолога-исследователя'
+        ELSE 'Общая инженерная траектория'
     END,
     'O''rta darajadagi modullar',
     progress,
@@ -49,13 +54,15 @@ LIMIT 5;
 
 -- 5. Seed Reflections
 TRUNCATE reflections CASCADE;
-INSERT INTO reflections (student_id, module_id, reflection_type, content, achievements, mood_rating)
+INSERT INTO reflections (student_id, module_id, reflection_type, content, content_ru, achievements, achievements_ru, mood_rating)
 SELECT 
     s.id,
     m.id,
     'Monthly',
     'O''tgan davr mobaynida burg''ulash texnikasini o''rgandim.',
+    'За прошедший период я изучил технику бурения.',
     'SBCM modellarini tushunib yetdim.',
+    'Я полностью понял модели SBCM.',
     5
 FROM students s, learning_modules m
 WHERE s.specialization = 'drilling' AND m.title_uz_lat = 'Burg''ulash texnologiyalari'

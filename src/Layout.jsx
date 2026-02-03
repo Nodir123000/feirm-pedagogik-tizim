@@ -10,13 +10,20 @@ import {
     UserCog,
     BarChart3,
     Network,
-    Sparkles
+    Sparkles,
+    Menu,
+    PanelLeftClose,
+    PanelLeftOpen
 } from 'lucide-react';
+import { useState } from 'react';
 import { useLanguage } from './components/shared/LanguageContext';
 import LanguageSwitcher from './components/shared/LanguageSwitcher';
+import { Toaster } from "@/components/ui/toaster";
+import IntroVideo from './components/shared/IntroVideo';
 
 const navigation = [
     { key: 'dashboard', href: '/', icon: LayoutDashboard },
+    { key: 'sbcm', href: '/sbcm', icon: Network },
     { key: 'students', href: '/students', icon: Users },
     { key: 'modules', href: '/modules', icon: BookOpen },
     { key: 'simulations', href: '/simulations', icon: Gamepad2 },
@@ -25,22 +32,32 @@ const navigation = [
     { key: 'trajectories', href: '/trajectories', icon: RouteIcon },
     { key: 'facilitators', href: '/facilitators', icon: UserCog },
     { key: 'monitoring', href: '/monitoring', icon: BarChart3 },
-    { key: 'sbcm', href: '/sbcm', icon: Network },
-    { key: 'content_gen', href: '/content-generator', icon: Sparkles },
 ];
 
 export default function Layout() {
     const location = useLocation();
     const { t } = useLanguage();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <IntroVideo />
             {/* Sidebar */}
-            <div className="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200">
+            <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                }`}>
                 <div className="flex flex-col h-full">
-                    {/* Logo */}
-                    <div className="flex items-center justify-center h-16 px-6 border-b border-gray-200">
-                        <h1 className="text-xl font-bold text-blue-600">FEIRM</h1>
+                    {/* Logo & Close Button */}
+                    <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+                        <div className="flex items-center gap-3">
+                            <img src="/logo.jfif" alt="FEIRM Logo" className="w-8 h-8 object-contain" />
+                            <h1 className="text-xl font-bold text-blue-600">FEIRM</h1>
+                        </div>
+                        <button
+                            onClick={() => setIsSidebarOpen(false)}
+                            className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 lg:hidden"
+                        >
+                            <Menu className="w-5 h-5" />
+                        </button>
                     </div>
 
                     {/* Navigation */}
@@ -75,22 +92,33 @@ export default function Layout() {
             </div>
 
             {/* Main content */}
-            {/* Main content */}
-            <div className="pl-64 flex flex-col min-h-screen">
+            <div className={`flex flex-col min-h-screen transition-all duration-300 ease-in-out ${isSidebarOpen ? 'pl-64' : 'pl-0'
+                }`}>
                 {/* Top Header */}
-                <header className="sticky top-0 z-10 bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-gray-800">
-                        {/* Dynamic header title could go here */}
-                    </h2>
+                <header className="sticky top-0 z-20 bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 focus:outline-none"
+                            title={isSidebarOpen ? "Скрыть меню" : "Показать меню"}
+                        >
+                            {isSidebarOpen ? (
+                                <PanelLeftClose className="w-5 h-5" />
+                            ) : (
+                                <PanelLeftOpen className="w-5 h-5" />
+                            )}
+                        </button>
+                    </div>
+
                     <div className="flex items-center gap-4">
                         <LanguageSwitcher />
                         <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                             <div className="text-right hidden sm:block">
-                                <p className="text-sm font-medium text-gray-900">А.О.Абдуллаева</p>
-                                <p className="text-xs text-gray-500">Администратор</p>
+                                <p className="text-sm font-medium text-gray-900">{t('admin_name')}</p>
+                                <p className="text-xs text-gray-500">{t('administrator')}</p>
                             </div>
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                АА
+                            <div className="w-10 h-10 rounded-full border border-gray-200 overflow-hidden bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                                <img src="/kelin.jfif" alt="Admin Avatar" className="w-full h-full object-cover rounded-full" onError={(e) => { e.target.src = '/kelin.jpg'; }} />
                             </div>
                         </div>
                     </div>
@@ -100,6 +128,7 @@ export default function Layout() {
                     <Outlet />
                 </main>
             </div>
+            <Toaster />
         </div>
     );
 }

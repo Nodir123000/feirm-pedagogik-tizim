@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchReflections, deleteReflection } from '@/entities/Reflection';
 import { fetchStudents } from '@/entities/Student';
 import { fetchLearningModules } from '@/entities/LearningModule';
@@ -22,8 +23,11 @@ import {
     Book
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/components/shared/LanguageContext';
 
 export default function Reflections() {
+    const navigate = useNavigate();
+    const { t, language, getLocalizedField } = useLanguage();
     const [reflections, setReflections] = useState([]);
     const [students, setStudents] = useState([]);
     const [modules, setModules] = useState([]);
@@ -41,12 +45,64 @@ export default function Reflections() {
                 fetchStudents(),
                 fetchLearningModules()
             ]);
-            setReflections(reflectionsData || []);
+
+            const mockReflections = [
+                {
+                    id: 'm1',
+                    student_id: 1,
+                    module_id: 1,
+                    reflection_type: 'Weekly',
+                    content_uz_lat: 'Burg\'ilash texnologiyalari bo\'yicha birinchi haftalik hisobot. Ko\'p narsani o\'rgandim.',
+                    content_ru: 'Первый еженедельный отчет по технологиям бурения. Узнал много нового.',
+                    mood_rating: 5,
+                    achievements_ru: 'Освоил базовые принципы работы буровой установки',
+                    challenges_ru: 'Сложности с расчетом давления',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: 'm2',
+                    student_id: 2,
+                    module_id: 2,
+                    reflection_type: 'Daily',
+                    content_uz_lat: 'Bugungi darsda xavfsizlik texnikasini o\'rgandik.',
+                    content_ru: 'На сегодняшнем занятии изучали технику безопасности.',
+                    mood_rating: 4,
+                    achievements_ru: 'Сдал тест по ТБ на отлично',
+                    challenges_ru: 'Запоминание всех инструкций',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: 'm3',
+                    student_id: 1,
+                    module_id: 3,
+                    reflection_type: 'Monthly',
+                    content_uz_lat: 'Oylik xulosa: Geologik tahlil juda qiziqarli ekan.',
+                    content_ru: 'Месячный итог: Геологический анализ оказался очень интересным.',
+                    mood_rating: 4,
+                    achievements_ru: 'Провел глубокий анализ трех месторождений',
+                    challenges_ru: 'Работа с большими объемами данных',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: 'm4',
+                    student_id: 2,
+                    module_id: 4,
+                    reflection_type: 'Weekly',
+                    content_uz_lat: 'Ikkinchi hafta: Loyihani boshladik.',
+                    content_ru: 'Вторая неделя: Начали работу над проектом.',
+                    mood_rating: 3,
+                    achievements_ru: 'Сформировали команду и распределили роли',
+                    challenges_ru: 'Конфликты при выборе стратегии',
+                    created_at: new Date().toISOString()
+                }
+            ];
+
+            setReflections((reflectionsData && reflectionsData.length > 0) ? [...reflectionsData, ...mockReflections] : mockReflections);
             setStudents(studentsData || []);
             setModules(modulesData || []);
         } catch (err) {
             console.error('Failed to load reflections data:', err);
-            setError('Could not load reflections.');
+            setError(t('load_error_reflections'));
         } finally {
             setLoading(false);
         }
@@ -57,25 +113,33 @@ export default function Reflections() {
     }, []);
 
     const handleDelete = async (id) => {
-        if (window.confirm('Delete this reflection entry?')) {
+        if (window.confirm(t('confirm_delete_reflection'))) {
             try {
                 await deleteReflection(id);
                 setReflections(reflections.filter(r => r.id !== id));
             } catch (err) {
                 console.error('Delete failed:', err);
-                alert('Failed to delete.');
+                alert(t('delete_failed'));
             }
         }
     };
 
+    const handleViewDetail = (reflection) => {
+        navigate(`/reflections/${reflection.id}`);
+    };
+
     const getStudentName = (studentId) => {
         const student = students.find(s => s.id === studentId);
-        return student ? student.full_name : 'Unknown Student';
+        return student ? student.full_name : t('unknown_student');
     };
 
     const getModuleTitle = (moduleId) => {
         const module = modules.find(m => m.id === moduleId);
-        return module ? (module.title_uz_lat || module.title_ru || 'Untitled Module') : 'General Reflection';
+        if (!module) return t('general_reflection');
+
+        // Use language-specific title based on current language
+        const titleKey = `title_${language}`;
+        return module[titleKey] || module.title_uz_lat || module.title_ru || t('untitled_module');
     };
 
     const getMoodIcon = (rating) => {
@@ -86,7 +150,7 @@ export default function Reflections() {
 
     const filteredReflections = reflections.filter(reflection => {
         const studentName = getStudentName(reflection.student_id);
-        const content = reflection.content || '';
+        const content = getLocalizedField(reflection, 'content') || '';
         const matchesSearch = studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             content.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filterType === 'All' || reflection.reflection_type === filterType;
@@ -95,21 +159,29 @@ export default function Reflections() {
 
     const types = ['All', ...new Set(reflections.map(r => r.reflection_type).filter(Boolean))];
 
+    const getTypeLabel = (type) => {
+        if (type === 'All') return t('all_types');
+        if (type === 'Weekly') return t('weekly');
+        if (type === 'Monthly') return t('monthly');
+        if (type === 'Daily') return t('daily');
+        return type;
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
                         <MessageSquare className="w-8 h-8 text-blue-500" />
-                        Reflections
+                        {t('reflections')}
                     </h1>
                     <p className="mt-1 text-gray-600">
-                        Student insights, achievements, and reflective learning journey logs.
+                        {t('reflections_subtitle')}
                     </p>
                 </div>
                 <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium">
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Entry
+                    {t('add_entry')}
                 </button>
             </div>
 
@@ -119,7 +191,7 @@ export default function Reflections() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search by student or content..."
+                        placeholder={t('search_student_content')}
                         className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -134,7 +206,7 @@ export default function Reflections() {
                             onChange={(e) => setFilterType(e.target.value)}
                         >
                             {types.map(type => (
-                                <option key={type} value={type}>{type}</option>
+                                <option key={type} value={type}>{getTypeLabel(type)}</option>
                             ))}
                         </select>
                     </div>
@@ -151,12 +223,12 @@ export default function Reflections() {
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-3">
                     <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
-                    <p className="text-gray-500 font-medium">Loading reflections...</p>
+                    <p className="text-gray-500 font-medium">{t('loading_reflections')}</p>
                 </div>
             ) : filteredReflections.length === 0 ? (
                 <div className="py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
                     <MessageSquare className="w-10 h-10 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-900 font-semibold">No reflections found</p>
+                    <p className="text-gray-900 font-semibold">{t('no_reflections_found')}</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -170,7 +242,7 @@ export default function Reflections() {
                                         </div>
                                         <div>
                                             <h3 className="text-sm font-bold text-gray-900">{getStudentName(reflection.student_id)}</h3>
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{reflection.reflection_type || 'Weekly'}</p>
+                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{getTypeLabel(reflection.reflection_type || 'Weekly')}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -188,14 +260,14 @@ export default function Reflections() {
                                 <div className="space-y-4 mb-6">
                                     <div>
                                         <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                                            <Book className="w-3 h-3" /> Module
+                                            <Book className="w-3 h-3" /> {t('module')}
                                         </div>
                                         <p className="text-sm font-semibold text-blue-600">{getModuleTitle(reflection.module_id)}</p>
                                     </div>
 
                                     <div className="bg-gray-50 p-4 rounded-xl">
                                         <p className="text-sm text-gray-700 italic leading-relaxed">
-                                            "{reflection.content || 'No content written yet...'}"
+                                            "{getLocalizedField(reflection, 'content') || t('no_content_written')}"
                                         </p>
                                     </div>
                                 </div>
@@ -203,15 +275,15 @@ export default function Reflections() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1.5 text-[9px] font-bold text-green-600 uppercase">
-                                            <Trophy className="w-3 h-3" /> Achievement
+                                            <Trophy className="w-3 h-3" /> {t('achievement')}
                                         </div>
-                                        <p className="text-xs text-gray-600 line-clamp-1 font-medium">{reflection.achievements || 'N/A'}</p>
+                                        <p className="text-xs text-gray-600 line-clamp-1 font-medium">{getLocalizedField(reflection, 'achievements') || t('na')}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 text-right">
                                         <div className="flex items-center justify-end gap-1.5 text-[9px] font-bold text-amber-600 uppercase">
-                                            <Target className="w-3 h-3" /> Challenge
+                                            <Target className="w-3 h-3" /> {t('challenge')}
                                         </div>
-                                        <p className="text-xs text-gray-600 line-clamp-1 font-medium">{reflection.challenges || 'N/A'}</p>
+                                        <p className="text-xs text-gray-600 line-clamp-1 font-medium">{getLocalizedField(reflection, 'challenges') || t('na')}</p>
                                     </div>
                                 </div>
                             </div>
@@ -219,14 +291,17 @@ export default function Reflections() {
                             <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between mt-auto">
                                 <div className="flex items-center gap-2 text-indigo-600">
                                     <Lightbulb className="w-4 h-4" />
-                                    <span className="text-[10px] font-black uppercase tracking-tight">AI insight included</span>
+                                    <span className="text-[10px] font-black uppercase tracking-tight">{t('ai_insight_included')}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button onClick={() => handleDelete(reflection.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors">
                                         <Trash2 className="w-4 h-4" />
                                     </button>
-                                    <button className="flex items-center text-xs font-bold text-blue-600 hover:translate-x-0.5 transition-transform gap-1 uppercase">
-                                        Full Log
+                                    <button
+                                        onClick={() => handleViewDetail(reflection)}
+                                        className="flex items-center text-xs font-bold text-blue-600 hover:translate-x-0.5 transition-transform gap-1 uppercase"
+                                    >
+                                        {t('full_log')}
                                         <ArrowRight className="w-3.5 h-3.5" />
                                     </button>
                                 </div>

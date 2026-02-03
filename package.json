@@ -10,6 +10,7 @@
         "lint": "eslint ."
     },
     "dependencies": {
+        "@base44/sdk": "^0.8.18",
         "@radix-ui/react-accordion": "^1.1.2",
         "@radix-ui/react-alert-dialog": "^1.0.5",
         "@radix-ui/react-avatar": "^1.0.4",
@@ -30,8 +31,9 @@
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.0",
         "date-fns": "^3.3.1",
-        "framer-motion": "^11.0.8",
+        "framer-motion": "^11.18.2",
         "lucide-react": "^0.344.0",
+        "openai": "^6.17.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-router-dom": "^6.22.0",

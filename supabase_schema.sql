@@ -24,6 +24,7 @@ CREATE TABLE learning_modules (
     module_type TEXT,
     duration_hours INTEGER,
     difficulty_level TEXT,
+    pedagogical_data JSONB DEFAULT '{}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -74,7 +75,8 @@ CREATE TABLE portfolio_items (
 CREATE TABLE trajectories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     student_id UUID REFERENCES students(id),
-    trajectory_name TEXT,
+    trajectory_name_uz_lat TEXT,
+    trajectory_name_ru TEXT,
     current_stage TEXT,
     progress_percentage DECIMAL DEFAULT 0,
     status TEXT DEFAULT 'Active',
@@ -90,9 +92,15 @@ CREATE TABLE reflections (
     module_id UUID REFERENCES learning_modules(id),
     reflection_type TEXT,
     content TEXT,
+    content_ru TEXT,
     achievements TEXT,
+    achievements_ru TEXT,
     challenges TEXT,
+    challenges_ru TEXT,
     mood_rating INTEGER,
+    facilitator_feedback TEXT,
+    facilitator_feedback_ru TEXT,
+    ai_analysis JSONB DEFAULT '{}',
     is_shared BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
