@@ -114,7 +114,6 @@ const translations = {
         core_modules: "Asosiy modullar",
         specialized_modules: "Maxsus modullar",
         paused: "To'xtatilgan",
-        active: "Faol",
         inactive: "Faol emas",
         only: "faqat",
         analyze: "Tahlil qilish",
