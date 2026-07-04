@@ -1,0 +1,19 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Запускать каждые 3 дня в полночь (UTC)
+    - cron: "0 0 */3 * *"
+  workflow_dispatch: # Позволяет запускать скрипт вручную из интерфейса GitHub
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send API Request to Supabase
+        run: |
+          echo "Pinging Supabase to keep it awake..."
+          curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" \
+          "https://spraizvmmkeojmlxufpg.supabase.co/rest/v1/students?select=id&limit=1" \
+          -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcmFpenZtbWtlb2ptbHh1ZnBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNzc1MDYsImV4cCI6MjA5ODc1MzUwNn0.lm52nwFWj6g5Xo1qSCAckVj6c-302sxPma6T2Er4Hlw" \
+          -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcmFpenZtbWtlb2ptbHh1ZnBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNzc1MDYsImV4cCI6MjA5ODc1MzUwNn0.lm52nwFWj6g5Xo1qSCAckVj6c-302sxPma6T2Er4Hlw"
