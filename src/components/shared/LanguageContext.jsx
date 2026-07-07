@@ -2213,8 +2213,32 @@ const translations = {
         weekly: "Weekly",
         welcome: "Welcome",
         well_done: "Well Done",
-        years_teaching: "Years Teaching",
-        years_total: "Total Years",
+        years_teaching: "Лет преподавания",
+        years_total: "Всего лет",
+        // ── Student profile tabs & sections ──
+        overview: "Обзор",
+        academic_performance: "Успеваемость",
+        activity: "Активность",
+        skills: "Навыки",
+        biography: "Биография",
+        education: "Образование",
+        specialization: "Специализация",
+        contact_info: "Контактная информация",
+        current_modules: "Текущие модули",
+        competencies: "Компетенции",
+        overall_progress_label: "Общий прогресс",
+        // ── Simulation & AnyLogic ──
+        reaction_time: "Время реакции",
+        procedure_adherence: "Соблюдение процедур",
+        equipment_handling: "Работа с оборудованием",
+        // ── Student management ──
+        student_deleted: "Студент удалён",
+        confirm_delete: "Удалить студента?",
+        filter_group: "По группе",
+        search_placeholder: "Поиск по имени...",
+        feature_coming_soon: "Скоро...",
+        editing: "Редактируется",
+        overall_label: "Общий",
     }
 };
 
