@@ -22,7 +22,8 @@ import {
     AlertCircle,
     TrendingUp,
     Play,
-    Zap
+    Zap,
+    ExternalLink
 } from 'lucide-react';
 import StatCard from '@/components/dashboard/StatCard';
 import { cn } from '@/lib/utils';
@@ -141,6 +142,32 @@ export default function Simulations() {
                     </button>
                 </div>
             </div>
+
+            {/* ── Powered by AnyLogic Banner ── */}
+            <a
+                href="https://www.anylogic.ru/oil-and-gas/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between gap-4 w-full px-5 py-3.5 rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 transition-all shadow-sm"
+            >
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm border border-blue-100">
+                        <Zap className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                        <div className="text-xs font-bold text-blue-900">
+                            {language === 'ru' ? 'Симуляции работают на базе AnyLogic — мирового лидера в нефтегазовом моделировании' : 'Simulyatsiyalar AnyLogic asosida ishlaydi — neft-gaz modellashtirish jahon lideri'}
+                        </div>
+                        <div className="text-xs text-blue-600 mt-0.5">
+                            {language === 'ru' ? 'Используется в 40% компаний Fortune 100 · Нажмите, чтобы узнать больше' : 'Fortune 100 kompaniyalarining 40%ida qo\'llaniladi · Ko\'proq bilish uchun bosing'}
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-blue-700 group-hover:text-blue-900 whitespace-nowrap flex-shrink-0">
+                    anylogic.ru
+                    <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </div>
+            </a>
 
             {/* Stats Overview - 6 Panels */}
             {/* Stats Overview - 6 Panels */}

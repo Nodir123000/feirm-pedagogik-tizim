@@ -46,11 +46,22 @@ export async function fetchStudentsByGroup(groupName) {
     return fetchStudents({ student_group: groupName });
 }
 
+export async function updateStudentCompetencyAfterSim(studentId, score, scenarioType) {
+    return handleResponse(
+        supabase.rpc('update_student_competency_after_sim', {
+            p_student_id: studentId,
+            p_score: score,
+            p_scenario_type: scenarioType
+        })
+    );
+}
+
 export default {
     fetchStudents,
     fetchStudentById,
     createStudent,
     updateStudent,
     deleteStudent,
-    fetchStudentsByGroup
+    fetchStudentsByGroup,
+    updateStudentCompetencyAfterSim
 };
