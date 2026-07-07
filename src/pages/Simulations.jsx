@@ -3,6 +3,7 @@ import { fetchSimulationScenarios, deleteSimulationScenario } from '@/entities/S
 import { fetchSimulationResults } from '@/entities/SimulationResult';
 import { useLanguage } from '@/components/shared/LanguageContext';
 import SimulationAnalytics from '@/components/simulation/SimulationAnalytics';
+import AnyLogicViewer from '@/components/simulation/AnyLogicViewer';
 import {
     Gamepad2,
     Search,
@@ -19,7 +20,9 @@ import {
     ChevronRight,
     BrainCircuit,
     AlertCircle,
-    TrendingUp
+    TrendingUp,
+    Play,
+    Zap
 } from 'lucide-react';
 import StatCard from '@/components/dashboard/StatCard';
 import { cn } from '@/lib/utils';
@@ -33,6 +36,7 @@ export default function Simulations() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDifficulty, setFilterDifficulty] = useState('All');
     const [selectedScenarioForAnalysis, setSelectedScenarioForAnalysis] = useState(null);
+    const [activeSimulation, setActiveSimulation] = useState(null);
 
     const loadData = async () => {
         setLoading(true);
@@ -351,20 +355,20 @@ export default function Simulations() {
                                     </div>
                                 </div>
 
-                                <div className="px-5 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between group/btn">
-                                    <div className="flex -space-x-2">
-                                        {[1, 2, 3].map(i => (
-                                            <div key={i} className="w-6 h-6 rounded-full bg-white border-2 border-gray-100 flex items-center justify-center text-[9px] font-bold text-gray-400">
-                                                {i}
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="px-5 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between gap-2">
                                     <button
                                         onClick={() => setSelectedScenarioForAnalysis(scenario)}
-                                        className="flex items-center text-xs font-bold text-purple-600 group-hover:text-purple-700 gap-1 uppercase tracking-tight transition-colors"
+                                        className="flex items-center text-xs font-semibold text-gray-500 hover:text-purple-600 gap-1 transition-colors"
                                     >
                                         {t('analyze_results')}
-                                        <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                                        <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveSimulation(scenario)}
+                                        className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg text-xs font-bold shadow-sm hover:shadow-md hover:from-purple-700 hover:to-indigo-700 transition-all active:scale-95"
+                                    >
+                                        <Play className="w-3.5 h-3.5" />
+                                        {language === 'ru' ? 'Запустить' : 'Boshlash'}
                                     </button>
                                 </div>
                             </div>
@@ -373,7 +377,17 @@ export default function Simulations() {
                 </div>
             )}
 
-
+            {/* AnyLogic Simulation Viewer Modal */}
+            {activeSimulation && (
+                <AnyLogicViewer
+                    scenario={activeSimulation}
+                    onClose={() => {
+                        setActiveSimulation(null);
+                        loadData(); // refresh results after completion
+                    }}
+                    studentId={null}
+                />
+            )}
         </div>
     );
 }
