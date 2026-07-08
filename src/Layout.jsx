@@ -13,7 +13,13 @@ import {
     Sparkles,
     Menu,
     PanelLeftClose,
-    PanelLeftOpen
+    PanelLeftOpen,
+    Bell,
+    Search,
+    X,
+    CheckCircle2,
+    AlertCircle,
+    Info
 } from 'lucide-react';
 import { useState } from 'react';
 import { useLanguage } from './components/shared/LanguageContext';
@@ -38,6 +44,16 @@ export default function Layout() {
     const location = useLocation();
     const { t } = useLanguage();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const { language } = useLanguage();
+    const [notifications, setNotifications] = useState([
+        { id: 1, type: 'info',    read: false, time: '10 мин', ru: '3 новых сообщения от студентов',        uz: '3 ta yangi xabar talabalardan' },
+        { id: 2, type: 'warning', read: false, time: '1 ч',   ru: '5 заданий требуют проверки',       uz: '5 ta topshiriq tekshirishni kutmoqda' },
+        { id: 3, type: 'success', read: false, time: '2 ч',   ru: 'Симуляция «Бурение» завершена группой', uz: 'Guruh simulyatsiyani yakunladi' },
+    ]);
+    const unreadCount = notifications.filter(n => !n.read).length;
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -108,9 +124,86 @@ export default function Layout() {
                                 <PanelLeftOpen className="w-5 h-5" />
                             )}
                         </button>
+                        {/* Global Search */}
+                        <div className={`relative transition-all duration-300 ${isSearchFocused ? 'w-80' : 'w-56'}`}>
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                onFocus={() => setIsSearchFocused(true)}
+                                onBlur={() => { setIsSearchFocused(false); setSearchQuery(''); }}
+                                placeholder={language === 'ru' ? 'Поиск по курсам, студентам...' : 'Kurslar, talabalar bo\'yicha qidirish...'}
+                                className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all"
+                            />
+                            {searchQuery && (
+                                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                                    <X className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600" />
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        {/* Notification Bell */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowNotifications(!showNotifications)}
+                                className="relative p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
+                            >
+                                <Bell className="w-5 h-5" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </button>
+                            {/* Notification Dropdown */}
+                            {showNotifications && (
+                                <div className="absolute right-0 top-11 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                                        <p className="text-sm font-bold text-gray-900">
+                                            {language === 'ru' ? 'Уведомления' : 'Bildirishnomalar'}
+                                        </p>
+                                        <button
+                                            onClick={() => setNotifications(ns => ns.map(n => ({...n, read: true})))}
+                                            className="text-xs text-blue-600 hover:underline"
+                                        >
+                                            {language === 'ru' ? 'Прочитать все' : 'Barchasini o\'qi'}
+                                        </button>
+                                    </div>
+                                    <div className="divide-y divide-gray-50">
+                                        {notifications.map(n => (
+                                            <div
+                                                key={n.id}
+                                                onClick={() => setNotifications(ns => ns.map(x => x.id === n.id ? {...x, read: true} : x))}
+                                                className={`flex items-start gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors ${!n.read ? 'bg-blue-50/40' : ''}`}
+                                            >
+                                                <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                                                    n.type === 'success' ? 'bg-green-100' : n.type === 'warning' ? 'bg-amber-100' : 'bg-blue-100'
+                                                }`}>
+                                                    {n.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-green-600" /> :
+                                                     n.type === 'warning' ? <AlertCircle className="w-4 h-4 text-amber-600" /> :
+                                                     <Info className="w-4 h-4 text-blue-600" />}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className={`text-sm text-gray-800 ${!n.read ? 'font-semibold' : ''}`}>
+                                                        {language === 'ru' ? n.ru : n.uz}
+                                                    </p>
+                                                    <p className="text-xs text-gray-400 mt-0.5">{n.time} {language === 'ru' ? 'назад' : 'avval'}</p>
+                                                </div>
+                                                {!n.read && <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-2" />}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="px-4 py-2.5 border-t border-gray-100 text-center">
+                                        <button className="text-xs text-blue-600 hover:underline">
+                                            {language === 'ru' ? 'Все уведомления →' : 'Barcha bildirishnomalar →'}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <LanguageSwitcher />
                         <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                             <div className="text-right hidden sm:block">

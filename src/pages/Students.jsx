@@ -109,6 +109,7 @@ export default function Students() {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterGroup, setFilterGroup] = useState('All');
+    const [activeTab, setActiveTab] = useState('all'); // all | by_group | by_course | inactive
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [newStudent, setNewStudent] = useState({
@@ -169,8 +170,20 @@ export default function Students() {
     const filteredStudents = students.filter(student => {
         const matchesSearch = student.full_name?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filterGroup === 'All' || student.student_group === filterGroup;
-        return matchesSearch && matchesFilter;
+        const matchesTab =
+            activeTab === 'all' ? true :
+            activeTab === 'inactive' ? (student.status === 'Inactive' || calculateAvgProgress(student) < 40) :
+            true;
+        return matchesSearch && matchesFilter && matchesTab;
     });
+
+    // Group students by student_group for "По группам" tab
+    const studentsByGroup = filteredStudents.reduce((acc, s) => {
+        const key = s.student_group || 'N/A';
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(s);
+        return acc;
+    }, {});
 
     const groups = ['All', ...new Set(students.map(s => s.student_group).filter(Boolean))];
 
@@ -657,7 +670,37 @@ export default function Students() {
                 </Dialog>
             </div>
 
+            {/* ── Tab Navigation (reference system match) ── */}
+            <div className="flex items-center gap-1 border-b border-gray-200 pb-0 -mb-2">
+                {[
+                    { key: 'all',       label: language === 'ru' ? 'Все студенты'  : 'Barcha talabalar', count: students.length },
+                    { key: 'by_group',  label: language === 'ru' ? 'По группам'    : 'Guruh bo\'yicha', count: Object.keys(studentsByGroup).length },
+                    { key: 'by_course', label: language === 'ru' ? 'По курсам'     : 'Kurs bo\'yicha', count: null },
+                    { key: 'inactive',  label: language === 'ru' ? 'Неактивные'    : 'Nofaol', count: students.filter(s => calculateAvgProgress(s) < 40).length },
+                ].map(tab => (
+                    <button
+                        key={tab.key}
+                        onClick={() => setActiveTab(tab.key)}
+                        className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-all ${
+                            activeTab === tab.key
+                                ? 'border-blue-600 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                    >
+                        {tab.label}
+                        {tab.count !== null && (
+                            <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                activeTab === tab.key ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'
+                            }`}>
+                                {tab.count}
+                            </span>
+                        )}
+                    </button>
+                ))}
+            </div>
+
             {/* Stats Grid */}
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-6">
                 <StatCard
                     title={t('total_students')}
@@ -755,7 +798,65 @@ export default function Students() {
                 );
             })()}
 
-            {/* Controls */}
+            {/* ── BY GROUP VIEW ── */}
+            {activeTab === 'by_group' && (
+                <div className="space-y-4">
+                    {Object.entries(studentsByGroup).sort(([a],[b]) => a.localeCompare(b)).map(([groupName, groupStudents]) => {
+                        const avgProg = Math.round(groupStudents.reduce((s,x) => s + calculateAvgProgress(x), 0) / groupStudents.length);
+                        return (
+                            <div key={groupName} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div className="flex items-center justify-between px-5 py-3 bg-blue-50 border-b border-blue-100">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                                            <Users className="w-4 h-4 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-900">{groupName}</p>
+                                            <p className="text-xs text-gray-500">{groupStudents.length} {language === 'ru' ? 'студентов' : 'talaba'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="text-right">
+                                            <p className="text-xs text-gray-500">{language === 'ru' ? 'Средний прогресс' : "O'rtacha progress"}</p>
+                                            <p className={`text-sm font-bold ${avgProg >= 70 ? 'text-green-600' : avgProg >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>{avgProg}%</p>
+                                        </div>
+                                        <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div className={`h-full rounded-full ${avgProg >= 70 ? 'bg-green-500' : avgProg >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{width:`${avgProg}%`}} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="divide-y divide-gray-50">
+                                    {groupStudents.map(student => {
+                                        const avg = calculateAvgProgress(student);
+                                        return (
+                                            <div key={student.id} className="flex items-center gap-4 px-5 py-3 hover:bg-gray-50 transition-colors cursor-pointer" onClick={() => { setSelectedStudent(getStudentDetails(student)); setIsDetailsOpen(true); }}>
+                                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                                    <span className="text-xs font-bold text-blue-700">{student.full_name.split(' ').map(n => n[0]).join('').slice(0,2)}</span>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-semibold text-gray-900 truncate">{student.full_name}</p>
+                                                    <p className="text-xs text-gray-400">{student.specialization}</p>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                        <div className={`h-full rounded-full ${avg >= 70 ? 'bg-green-500' : avg >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{width:`${avg}%`}} />
+                                                    </div>
+                                                    <span className={`text-sm font-bold w-10 text-right ${avg >= 70 ? 'text-green-600' : avg >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>{avg}%</span>
+                                                </div>
+                                                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            {/* Controls (shown for all/inactive/by_course tabs) */}
+            {activeTab !== 'by_group' && (
+            <>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -907,7 +1008,9 @@ export default function Students() {
                     </Table>
                 </div>
             )}
-            </div>
+            </>
+            )}
         </div>
+    </div>
     );
 }
