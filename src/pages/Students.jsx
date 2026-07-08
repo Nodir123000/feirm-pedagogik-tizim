@@ -669,8 +669,9 @@ export default function Students() {
                     </DialogContent>
                 </Dialog>
             </div>
+        </div>
 
-            {/* ── Tab Navigation (reference system match) ── */}
+        {/* ── Tab Navigation (reference system match) ── */}
             <div className="flex items-center gap-1 border-b border-gray-200 pb-0 -mb-2">
                 {[
                     { key: 'all',       label: language === 'ru' ? 'Все студенты'  : 'Barcha talabalar', count: students.length },
@@ -1011,6 +1012,5 @@ export default function Students() {
             </>
             )}
         </div>
-    </div>
     );
 }
