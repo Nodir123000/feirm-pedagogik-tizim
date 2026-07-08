@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchStudents } from '@/entities/Student';
 import { fetchLearningModules } from '@/entities/LearningModule';
 import { fetchSimulationScenarios } from '@/entities/SimulationScenario';
@@ -11,7 +12,14 @@ import {
     Sparkles,
     Brain,
     MessageSquare,
-    AlertTriangle
+    AlertTriangle,
+    Plus,
+    Play,
+    FileText,
+    Upload,
+    Calendar,
+    Clock,
+    ChevronRight
 } from 'lucide-react';
 import StatCard from '@/components/dashboard/StatCard';
 import ProgressChart from '@/components/dashboard/ProgressChart';
@@ -24,7 +32,8 @@ import { useLanguage } from '@/components/shared/LanguageContext';
 import { getSBCMDemoData, getMPMSDemoData, getAIRecommendations } from '@/lib/dissertationDemoData';
 
 export default function Dashboard() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const navigate = useNavigate();
     const [stats, setStats] = useState({
         students: 0,
         activeStudents: 0,
@@ -229,6 +238,70 @@ export default function Dashboard() {
 
             {/* FEIRM Flow Diagram */}
             <FEIRMFlowDiagram />
+
+            {/* ── Bottom Row: Quick Actions + Today's Schedule ── */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                {/* Quick Actions */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <h3 className="text-base font-bold text-gray-900 mb-4">
+                        {language === 'ru' ? 'Быстрые действия' : 'Tezkor harakatlar'}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                        {[
+                            { icon: Plus,     color: 'bg-blue-500',    label: language === 'ru' ? 'Создать задание'     : 'Topshiriq yaratish',    href: '/modules' },
+                            { icon: Play,     color: 'bg-purple-500',  label: language === 'ru' ? 'Запустить симуляцию' : 'Simulyatsiya boshlash',  href: '/simulations' },
+                            { icon: FileText, color: 'bg-emerald-500', label: language === 'ru' ? 'Создать тест'       : 'Test yaratish',          href: '/modules' },
+                            { icon: Upload,   color: 'bg-amber-500',   label: language === 'ru' ? 'Загрузить материал'  : 'Material yuklash',       href: '/portfolio' },
+                        ].map((action, i) => (
+                            <button
+                                key={i}
+                                onClick={() => navigate(action.href)}
+                                className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm transition-all text-left group"
+                            >
+                                <div className={`w-9 h-9 rounded-lg ${action.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                                    <action.icon className="w-4 h-4 text-white" />
+                                </div>
+                                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 leading-tight">{action.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Today's Schedule */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-blue-600" />
+                            {language === 'ru' ? 'Расписание на сегодня' : 'Bugungi jadval'}
+                        </h3>
+                        <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-lg">
+                            {new Date().toLocaleDateString(language === 'ru' ? 'ru-RU' : 'uz-UZ', { weekday: 'short', day: 'numeric', month: 'short' })}
+                        </span>
+                    </div>
+                    <div className="space-y-1.5">
+                        {[
+                            { time: '09:00', end: '10:30', title: language === 'ru' ? 'Основы нефтегазовой технологии'  : 'Neft-gaz texnologiyasi asoslari',       type: language === 'ru' ? 'Лекция'  : 'Ma\'ruza',   color: 'bg-blue-100 text-blue-700' },
+                            { time: '11:00', end: '12:30', title: language === 'ru' ? 'Симуляция: Бурение скважины'  : 'Simulyatsiya: Quduq burg\'ilash',        type: language === 'ru' ? 'Практика' : 'Amaliyot',  color: 'bg-purple-100 text-purple-700' },
+                            { time: '14:00', end: '15:30', title: language === 'ru' ? 'Консультация для студентов'        : 'Talabalar uchun maslahat',               type: language === 'ru' ? 'Онлайн'  : 'Online',    color: 'bg-emerald-100 text-emerald-700' },
+                            { time: '16:00', end: '17:00', title: language === 'ru' ? 'Проверка заданий и отчётов'      : 'Topshiriqlar va hisobotlarni tekshirish', type: language === 'ru' ? 'Самост.' : 'Mustaqil', color: 'bg-amber-100 text-amber-700' },
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
+                                <div className="text-right w-14 flex-shrink-0">
+                                    <p className="text-xs font-bold text-gray-800">{item.time}</p>
+                                    <p className="text-[10px] text-gray-400">{item.end}</p>
+                                </div>
+                                <div className="w-0.5 h-8 bg-gray-200 rounded-full flex-shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-gray-800 truncate">{item.title}</p>
+                                </div>
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${item.color}`}>{item.type}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+            </div>
 
 
         </div>
