@@ -327,72 +327,94 @@ export default function Simulations() {
 
                         const meta = getScenarioMetadata(latTitle);
 
+                        const efficiencyPct = scenario.efficiency_pct || 78;
+                        const effColor = efficiencyPct >= 80 ? '#10b981' : efficiencyPct >= 70 ? '#f59e0b' : '#ef4444';
+
                         return (
-                            <div key={scenario.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden hover:shadow-md hover:border-purple-200 transition-all group">
-                                {/* Image Section */}
-                                <div className="relative h-48 bg-gray-100 group-hover:h-52 transition-all duration-500 overflow-hidden">
-                                    {meta ? (
-                                        <img
-                                            src={meta.image}
-                                            alt={title}
-                                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600 opacity-90">
-                                            <Gamepad2 className="w-12 h-12 text-white opacity-50 group-hover:scale-110 transition-transform duration-500" />
-                                        </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
+                            <div key={scenario.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden hover:shadow-lg hover:border-purple-200 transition-all group">
+                                {/* ── Image Section ── */}
+                                <div className="relative h-44 overflow-hidden bg-gray-100">
+                                    <img
+                                        src={scenario.preview_image_url || 'https://images.unsplash.com/photo-1581094651181-35942459ef62?auto=format&fit=crop&q=80&w=800'}
+                                        alt={title}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        onError={e => { e.target.src = 'https://images.unsplash.com/photo-1581094651181-35942459ef62?auto=format&fit=crop&q=80&w=800'; }}
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                                    <div className="absolute top-4 left-4 flex gap-2">
-                                        <span className="px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wider bg-white/90 text-purple-700 shadow-sm backdrop-blur-sm">
-                                            {t(`type_${scenario.scenario_type || 'Industrial'}`)}
+                                    {/* Top badges */}
+                                    <div className="absolute top-3 left-3 flex gap-1.5">
+                                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide bg-green-500 text-white shadow">
+                                            {language === 'ru' ? 'Активная' : 'Faol'}
                                         </span>
-                                    </div>
-
-                                    <div className="absolute top-4 right-4">
                                         <span className={cn(
-                                            "px-2 px-1.5 rounded-md text-[10px] font-bold uppercase shadow-sm backdrop-blur-sm",
-                                            scenario.difficulty_level === 'High' ? "bg-red-50/90 text-red-600" :
-                                                scenario.difficulty_level === 'Medium' ? "bg-orange-50/90 text-orange-600" :
-                                                    "bg-blue-50/90 text-blue-600"
+                                            'px-2 py-0.5 rounded-md text-[10px] font-bold uppercase shadow',
+                                            scenario.difficulty_level === 'High' ? 'bg-red-500 text-white' :
+                                            scenario.difficulty_level === 'Medium' ? 'bg-orange-400 text-white' :
+                                            'bg-blue-500 text-white'
                                         )}>
                                             {t(`diff_${scenario.difficulty_level || 'Normal'}`)}
                                         </span>
                                     </div>
-                                </div>
 
-                                {/* Content Section */}
-                                <div className="p-5 flex-1 flex flex-col">
-                                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-purple-700 transition-colors">{title}</h3>
+                                    {/* Star favorite */}
+                                    <button className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center backdrop-blur-sm hover:bg-white transition-colors shadow">
+                                        <svg className="w-3.5 h-3.5 text-gray-400 hover:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                        </svg>
+                                    </button>
 
-                                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed h-10">
-                                        {scenario[`description_${language}`] || scenario.description_uz_lat || t('ready_for_sim')}
-                                    </p>
-
-                                    <div className="grid grid-cols-2 gap-3 mt-auto">
-                                        <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                            <Clock className="w-3.5 h-3.5 text-gray-400" />
-                                            <span>{scenario.simulation_duration_minutes || 45} {t('minutes_short')}</span>
+                                    {/* Efficiency badge bottom-left */}
+                                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+                                        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-sm shadow text-xs font-bold" style={{ color: effColor }}>
+                                            <TrendingUp className="w-3 h-3" />
+                                            {language === 'ru' ? `Эффективность ${efficiencyPct}%` : `Samaradorlik ${efficiencyPct}%`}
                                         </div>
-                                        <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                            <BrainCircuit className="w-3.5 h-3.5 text-gray-400" />
-                                            <span>{t('ai_integrated')}</span>
-                                        </div>
+                                    </div>
+
+                                    {/* Duration bottom-right */}
+                                    <div className="absolute bottom-3 right-3">
+                                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-sm text-white text-[10px] font-medium">
+                                            <Clock className="w-3 h-3" />
+                                            {scenario.simulation_duration_minutes || 45} {t('minutes_short')}
+                                        </span>
                                     </div>
                                 </div>
 
-                                <div className="px-5 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between gap-2">
+                                {/* ── Content ── */}
+                                <div className="p-4 flex-1 flex flex-col">
+                                    <div className="flex items-start justify-between gap-2 mb-1.5">
+                                        <h3 className="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-purple-700 transition-colors leading-tight">{title}</h3>
+                                        <span className="flex-shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-600 uppercase tracking-wide">
+                                            {t(`type_${scenario.scenario_type || 'Industrial'}`)}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed flex-1">
+                                        {scenario[`description_${language}`] || scenario.description_uz_lat || t('ready_for_sim')}
+                                    </p>
+
+                                    {/* Competency tag */}
+                                    {scenario.related_competencies && (
+                                        <div className="mt-2.5 flex gap-1 flex-wrap">
+                                            {scenario.related_competencies.split(',').slice(0, 2).map((c, i) => (
+                                                <span key={i} className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 text-[10px] font-medium">{c.trim()}</span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* ── Footer ── */}
+                                <div className="px-4 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between gap-2">
                                     <button
                                         onClick={() => setSelectedScenarioForAnalysis(scenario)}
-                                        className="flex items-center text-xs font-semibold text-gray-500 hover:text-purple-600 gap-1 transition-colors"
+                                        className="flex items-center text-xs font-medium text-gray-400 hover:text-purple-600 gap-1 transition-colors"
                                     >
                                         {t('analyze_results')}
                                         <ChevronRight className="w-3 h-3" />
                                     </button>
                                     <button
                                         onClick={() => setActiveSimulation(scenario)}
-                                        className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg text-xs font-bold shadow-sm hover:shadow-md hover:from-purple-700 hover:to-indigo-700 transition-all active:scale-95"
+                                        className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg text-xs font-bold shadow-sm hover:shadow-md hover:from-purple-700 hover:to-indigo-700 transition-all active:scale-95"
                                     >
                                         <Play className="w-3.5 h-3.5" />
                                         {language === 'ru' ? 'Запустить' : 'Boshlash'}

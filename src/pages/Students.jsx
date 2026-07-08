@@ -32,7 +32,9 @@ import {
     ChevronRight,
     Globe,
     FileText,
-    Activity
+    Activity,
+    Download,
+    AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/components/shared/LanguageContext';
@@ -345,6 +347,29 @@ export default function Students() {
         }
     };
 
+    // ── Export to CSV ──
+    const exportToCSV = () => {
+        const headers = ['ФИО', 'Группа', 'Специализация', 'Прогресс %', 'Проф. компетенция', 'Мета-компетенция', 'Статус'];
+        const rows = students.map(s => [
+            s.full_name,
+            s.student_group || '',
+            s.specialization || '',
+            calculateAvgProgress(s),
+            s.professional_competency || 0,
+            s.meta_competency || 0,
+            s.status || 'Active'
+        ]);
+        const csvContent = [headers, ...rows].map(row => row.join(';')).join('\n');
+        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `students_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast({ title: language === 'ru' ? 'Экспорт завершён' : 'Eksport tugadi', description: `${students.length} ${language === 'ru' ? 'студентов' : 'talaba'}` });
+    };
+
     if (isDetailsOpen && selectedStudent) {
         return (
             <div className="animate-in fade-in slide-in-from-right duration-500 space-y-6 pb-12">
@@ -555,7 +580,16 @@ export default function Students() {
                         {t('feirm_subtitle')}
                     </p>
                 </div>
-                <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                <div className="flex items-center gap-2">
+                    {/* Export CSV */}
+                    <button
+                        onClick={exportToCSV}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm font-medium text-sm"
+                    >
+                        <Download className="w-4 h-4" />
+                        {language === 'ru' ? 'Экспорт' : 'Eksport'}
+                    </button>
+                    <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                     <DialogTrigger asChild>
                         <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium">
                             <Plus className="w-4 h-4 mr-2" />
@@ -671,6 +705,55 @@ export default function Students() {
                     color="rose"
                 />
             </div>
+
+            {/* ── AT-RISK STUDENTS PANEL ── */}
+            {(() => {
+                const atRisk = filteredStudents.filter(s => calculateAvgProgress(s) < 55);
+                if (atRisk.length === 0) return null;
+                return (
+                    <div className="bg-white rounded-xl shadow-sm border border-red-100 overflow-hidden">
+                        <div className="flex items-center gap-2 px-5 py-3 bg-red-50 border-b border-red-100">
+                            <AlertCircle className="w-4 h-4 text-red-500" />
+                            <span className="text-sm font-bold text-red-700">
+                                {language === 'ru' ? `Студенты в зоне риска — ${atRisk.length} чел.` : `Xavf ostidagi talabalar — ${atRisk.length} kishi`}
+                            </span>
+                            <span className="ml-auto text-xs text-red-400">
+                                {language === 'ru' ? 'Прогресс ниже 55%' : 'Progress 55% dan past'}
+                            </span>
+                        </div>
+                        <div className="divide-y divide-gray-50">
+                            {atRisk.slice(0, 5).map(student => {
+                                const avg = calculateAvgProgress(student);
+                                const comps = getStudentCompetencies(student);
+                                return (
+                                    <div key={student.id} className="flex items-center gap-4 px-5 py-3 hover:bg-red-50/40 transition-colors cursor-pointer" onClick={() => { setSelectedStudent(getStudentDetails(student)); setIsDetailsOpen(true); }}>
+                                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                                            <span className="text-xs font-bold text-red-600">{student.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-semibold text-gray-900 truncate">{student.full_name}</p>
+                                            <p className="text-xs text-gray-400">{student.student_group} · {student.specialization}</p>
+                                        </div>
+                                        <div className="text-right flex-shrink-0">
+                                            <p className="text-sm font-bold text-red-600">{avg}%</p>
+                                            <p className="text-[10px] text-gray-400">{language === 'ru' ? 'Прогресс' : 'Progress'}</p>
+                                        </div>
+                                        <div className="w-24 flex-shrink-0">
+                                            <div className="h-1.5 bg-red-100 rounded-full overflow-hidden">
+                                                <div className="h-full bg-red-400 rounded-full" style={{ width: `${avg}%` }} />
+                                            </div>
+                                            <p className="text-[10px] text-gray-400 mt-0.5">
+                                                {language === 'ru' ? `Проф: ${comps.professional}%` : `Kasbiy: ${comps.professional}%`}
+                                            </p>
+                                        </div>
+                                        <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            })()}
 
             {/* Controls */}
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
@@ -824,6 +907,7 @@ export default function Students() {
                     </Table>
                 </div>
             )}
+            </div>
         </div>
     );
 }
