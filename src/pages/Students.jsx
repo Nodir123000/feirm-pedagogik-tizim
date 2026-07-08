@@ -89,7 +89,7 @@ const specializationColors = {
 };
 
 export default function Students() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [students, setStudents] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
