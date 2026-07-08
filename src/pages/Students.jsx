@@ -142,9 +142,11 @@ export default function Students() {
 
             const atRisk = studentsList.filter(s => (s.progress || 0) < 50).length;
 
+            const inactiveCount = studentsList.filter(s => s.status === 'Inactive' || calculateAvgProgress(s) < 40).length;
+
             setStats({
                 students: studentsList.length,
-                activeStudents: Math.round(studentsList.length * 0.85),
+                activeStudents: studentsList.length - inactiveCount,
                 modules: modules.length,
                 activeModules: modules.filter(m => m.is_active).length,
                 simulations: simulations.length,
@@ -677,7 +679,7 @@ export default function Students() {
                     { key: 'all',       label: language === 'ru' ? 'Все студенты'  : 'Barcha talabalar', count: students.length },
                     { key: 'by_group',  label: language === 'ru' ? 'По группам'    : 'Guruh bo\'yicha', count: Object.keys(studentsByGroup).length },
                     { key: 'by_course', label: language === 'ru' ? 'По курсам'     : 'Kurs bo\'yicha', count: null },
-                    { key: 'inactive',  label: language === 'ru' ? 'Неактивные'    : 'Nofaol', count: students.filter(s => calculateAvgProgress(s) < 40).length },
+                    { key: 'inactive',  label: language === 'ru' ? 'Неактивные'    : 'Nofaol', count: students.filter(s => s.status === 'Inactive' || calculateAvgProgress(s) < 40).length },
                 ].map(tab => (
                     <button
                         key={tab.key}
