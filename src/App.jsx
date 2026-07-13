@@ -15,6 +15,10 @@ import Monitoring from './pages/Monitoring';
 import SBCM from './pages/SBCM';
 import StudentClassroom from './pages/StudentClassroom';
 import Login from './pages/Login';
+import Groups from './pages/Groups';
+import Settings from './pages/Settings';
+import Help from './pages/Help';
+import Tasks from './pages/Tasks';
 
 import { LanguageProvider } from './components/shared/LanguageContext';
 import { AuthProvider, useAuth } from './lib/AuthContext';
@@ -45,6 +49,10 @@ function AppContent() {
                         <Route path="facilitators" element={<Facilitators />} />
                         <Route path="monitoring" element={<Monitoring />} />
                         <Route path="sbcm" element={<SBCM />} />
+                        <Route path="groups" element={<Groups />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="help" element={<Help />} />
+                        <Route path="tasks" element={<Tasks />} />
                         <Route path="student/classroom" element={<StudentClassroom />} />
                     </Route>
                 </Routes>
