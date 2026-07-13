@@ -10,7 +10,7 @@ import { useLanguage } from '@/components/shared/LanguageContext';
 const TABS = ['profile', 'notifications', 'language', 'security', 'appearance'];
 
 export default function Settings() {
-    const { language, t } = useLanguage();
+    const { language, setLanguage, t } = useLanguage();
     const [activeTab, setActiveTab] = useState('profile');
     const [saved, setSaved] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -279,6 +279,9 @@ export default function Settings() {
                                 ].map(lang => (
                                     <div
                                         key={lang.code}
+                                        onClick={() => {
+                                            if (setLanguage) setLanguage(lang.code);
+                                        }}
                                         className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all
                                             ${language === lang.code
                                                 ? 'border-indigo-500 bg-indigo-50'
@@ -302,8 +305,8 @@ export default function Settings() {
                             </div>
                             <p className="text-xs text-gray-400 mt-2">
                                 {language === 'ru'
-                                    ? '* Чтобы сменить язык, используйте переключатель языка в верхней панели.'
-                                    : '* Tilni o\'zgartirish uchun yuqori paneldagi til almashturgichdan foydalaning.'}
+                                    ? '* Язык будет изменен сразу для всей системы.'
+                                    : '* Til butun tizim uchun darhol o\'zgartiriladi.'}
                             </p>
                         </div>
                     )}
