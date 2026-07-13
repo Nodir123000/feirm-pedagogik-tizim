@@ -161,7 +161,34 @@ export default function Analytics() {
     const { t, language } = useLanguage();
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState('overview');
+    
+    // Filter states
+    const [courseFilter, setCourseFilter] = useState('all');
+    const [groupFilter, setGroupFilter] = useState('all');
+    const [moduleFilter, setModuleFilter] = useState('all');
+    
     const ru = language === 'ru';
+
+    const handleFilterChange = (filterName, value) => {
+        if (filterName === 'course') setCourseFilter(value);
+        if (filterName === 'group') setGroupFilter(value);
+        if (filterName === 'module') setModuleFilter(value);
+        
+        toast({
+            title: ru ? 'Данные обновлены' : 'Ma\'lumotlar yangilandi',
+            description: ru ? 'Показана аналитика для выбранных фильтров' : 'Tanlangan filtrlar bo\'yicha analitika ko\'rsatilmoqda',
+        });
+    };
+
+    const resetFilters = () => {
+        setCourseFilter('all');
+        setGroupFilter('all');
+        setModuleFilter('all');
+        toast({
+            title: ru ? 'Фильтры сброшены' : 'Filtrlar tiklandi',
+            description: ru ? 'Показана общая статистика' : 'Umumiy statistika ko\'rsatilmoqda',
+        });
+    };
 
     const notify = (msg) => toast({
         title: ru ? 'Уведомление' : 'Xabarnoma',
@@ -741,12 +768,44 @@ export default function Analytics() {
                 <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 cursor-pointer hover:bg-gray-100">
                     <Calendar className="w-4 h-4 text-gray-400" /><span>01.05.2025 – 24.05.2025</span>
                 </div>
-                {[ru?'Курс: Все':'Kurs: Barcha', ru?'Группа: Все':'Guruh: Barcha', ru?'Модуль: Все':'Modul: Barcha'].map((f, i) => (
-                    <select key={i} className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option>{f}</option>
-                    </select>
-                ))}
-                <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 hover:bg-gray-100 rounded-lg transition-colors">
+                
+                <select 
+                    value={courseFilter} 
+                    onChange={(e) => handleFilterChange('course', e.target.value)}
+                    className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                    <option value="all">{ru ? 'Курс: Все' : 'Kurs: Barcha'}</option>
+                    <option value="c1">{ru ? 'Основы нефтегазовой технологии' : 'Neft-gaz texnologiyalari asoslari'}</option>
+                    <option value="c2">{ru ? 'Бурение скважин' : 'Quduqlarni burg\'ulash'}</option>
+                </select>
+
+                <select 
+                    value={groupFilter} 
+                    onChange={(e) => handleFilterChange('group', e.target.value)}
+                    className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                    <option value="all">{ru ? 'Группа: Все' : 'Guruh: Barcha'}</option>
+                    <option value="g1">НГТ-21-1</option>
+                    <option value="g2">НГТ-21-2</option>
+                    <option value="g3">НГТ-21-3</option>
+                </select>
+
+                <select 
+                    value={moduleFilter} 
+                    onChange={(e) => handleFilterChange('module', e.target.value)}
+                    className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                    <option value="all">{ru ? 'Модуль: Все' : 'Modul: Barcha'}</option>
+                    <option value="m1">SBCM</option>
+                    <option value="m2">SDME + ASM</option>
+                    <option value="m3">FEIRM</option>
+                    <option value="m4">MPMS</option>
+                </select>
+
+                <button 
+                    onClick={resetFilters}
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 hover:bg-gray-100 rounded-lg transition-colors"
+                >
                     <RefreshCcw className="w-3.5 h-3.5" />{ru?'Сбросить':'Qayta tiklash'}
                 </button>
             </div>
