@@ -39,7 +39,7 @@ const mainNavigation = [
     { key: 'nav_simulations',    href: '/simulations',  icon: Gamepad2        },
     { key: 'nav_grades',         href: '/monitoring',   icon: BarChart3       },
     { key: 'nav_facilitation',   href: '/facilitators', icon: MessageSquare   },
-    { key: 'nav_analytics',      href: '/monitoring',   icon: LineChart       },
+    { key: 'nav_analytics',      href: '/analytics',    icon: LineChart       },
     { key: 'nav_materials',      href: '/portfolio',    icon: FolderOpen      },
     { key: 'nav_messages',       href: '/reflections',  icon: Mail            },
     { key: 'nav_calendar',       href: '/trajectories', icon: Calendar        },

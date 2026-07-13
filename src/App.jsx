@@ -19,6 +19,7 @@ import Groups from './pages/Groups';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Tasks from './pages/Tasks';
+import Analytics from './pages/Analytics';
 
 import { LanguageProvider } from './components/shared/LanguageContext';
 import { AuthProvider, useAuth } from './lib/AuthContext';
@@ -53,6 +54,7 @@ function AppContent() {
                         <Route path="settings" element={<Settings />} />
                         <Route path="help" element={<Help />} />
                         <Route path="tasks" element={<Tasks />} />
+                        <Route path="analytics" element={<Analytics />} />
                         <Route path="student/classroom" element={<StudentClassroom />} />
                     </Route>
                 </Routes>
