@@ -195,13 +195,19 @@ export default function Analytics() {
         description: msg,
     });
 
+    // Calculate a modifier based on filters to simulate data changing
+    const mod = (courseFilter !== 'all' ? 0.4 : 1) * 
+                (groupFilter !== 'all' ? 0.3 : 1) * 
+                (moduleFilter !== 'all' ? 0.8 : 1);
+    const m = (val) => Math.round(val * mod);
+
     const kpiStats = [
-        { title: ru ? 'Всего студентов' : 'Jami talabalar', value: '86', sub: ru ? 'Во всех группах' : 'Barcha guruhlarda', icon: Users, iconBg: 'bg-indigo-100', iconColor: 'text-indigo-600', trend: '+4', trendUp: true },
-        { title: ru ? 'Средний балл' : "O'rtacha ball", value: '72%', sub: ru ? 'По всем курсам' : 'Barcha kurslarda', icon: GraduationCap, iconBg: 'bg-green-100', iconColor: 'text-green-600', trend: '+5%', trendUp: true },
-        { title: ru ? 'Успеваемость >70%' : "O'zlashtirish >70%", value: '36', sub: ru ? 'Студентов (42%)' : 'Talabalar (42%)', icon: TrendingUp, iconBg: 'bg-blue-100', iconColor: 'text-blue-600', trend: '+3', trendUp: true },
-        { title: ru ? 'Выполнено заданий' : 'Bajarilgan topshiriqlar', value: '98%', sub: ru ? 'Средний показатель' : "O'rtacha", icon: CheckSquare, iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600', trend: '+2%', trendUp: true },
-        { title: ru ? 'Средняя активность' : "O'rtacha faollik", value: '4.6/5', sub: ru ? 'По всем курсам' : 'Barcha kurslarda', icon: Zap, iconBg: 'bg-amber-100', iconColor: 'text-amber-600', trend: '+0.2', trendUp: true },
-        { title: ru ? 'Студенты в риске' : 'Xavf zonasida', value: '10', sub: ru ? '(12%) Внимание' : "(12%) E'tibor", icon: AlertTriangle, iconBg: 'bg-red-100', iconColor: 'text-red-500', trend: '-2', trendUp: true },
+        { title: ru ? 'Всего студентов' : 'Jami talabalar', value: String(m(86)), sub: ru ? 'Во всех группах' : 'Barcha guruhlarda', icon: Users, iconBg: 'bg-indigo-100', iconColor: 'text-indigo-600', trend: '+4', trendUp: true },
+        { title: ru ? 'Средний балл' : "O'rtacha ball", value: `${Math.round(72 * (mod > 0.5 ? 1 : 1.1))}%`, sub: ru ? 'По всем курсам' : 'Barcha kurslarda', icon: GraduationCap, iconBg: 'bg-green-100', iconColor: 'text-green-600', trend: '+5%', trendUp: true },
+        { title: ru ? 'Успеваемость >70%' : "O'zlashtirish >70%", value: String(m(36)), sub: ru ? `Студентов (${Math.round(42*(mod>0.5?1:1.2))}%)` : `Talabalar (${Math.round(42*(mod>0.5?1:1.2))}%)`, icon: TrendingUp, iconBg: 'bg-blue-100', iconColor: 'text-blue-600', trend: '+3', trendUp: true },
+        { title: ru ? 'Выполнено заданий' : 'Bajarilgan topshiriqlar', value: `${Math.round(98 * (mod > 0.5 ? 1 : 0.9))}%`, sub: ru ? 'Средний показатель' : "O'rtacha", icon: CheckSquare, iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600', trend: '+2%', trendUp: true },
+        { title: ru ? 'Средняя активность' : "O'rtacha faollik", value: `${(4.6 * (mod > 0.5 ? 1 : 0.9)).toFixed(1)}/5`, sub: ru ? 'По всем курсам' : 'Barcha kurslarda', icon: Zap, iconBg: 'bg-amber-100', iconColor: 'text-amber-600', trend: '+0.2', trendUp: true },
+        { title: ru ? 'Студенты в риске' : 'Xavf zonasida', value: String(m(10)), sub: ru ? '(12%) Внимание' : "(12%) E'tibor", icon: AlertTriangle, iconBg: 'bg-red-100', iconColor: 'text-red-500', trend: '-2', trendUp: true },
     ];
 
     const atRisk = [
@@ -212,10 +218,10 @@ export default function Analytics() {
     ];
 
     const topCourses = [
-        { name: ru ? 'Основы нефтегазовой технологии' : "Neft-gaz texnologiyalari asoslari", score: 72, students: 28, above70: 18 },
-        { name: ru ? 'Бурение нефтяных и газовых скважин' : "Neft va gaz quduqlarini burg'ulash", score: 74, students: 24, above70: 16 },
-        { name: ru ? 'Транспортировка нефти и газа' : 'Neft va gazni tashish', score: 69, students: 20, above70: 12 },
-        { name: ru ? 'Подготовка нефти и газа' : 'Neft va gazni tayyorlash', score: 71, students: 14, above70: 9 },
+        { name: ru ? 'Основы нефтегазовой технологии' : "Neft-gaz texnologiyalari asoslari", score: Math.round(72 * (mod > 0.5 ? 1 : 1.1)), students: m(28), above70: m(18) },
+        { name: ru ? 'Бурение нефтяных и газовых скважин' : "Neft va gaz quduqlarini burg'ulash", score: Math.round(74 * (mod > 0.5 ? 1 : 1.05)), students: m(24), above70: m(16) },
+        { name: ru ? 'Транспортировка нефти и газа' : 'Neft va gazni tashish', score: Math.round(69 * (mod > 0.5 ? 1 : 1.15)), students: m(20), above70: m(12) },
+        { name: ru ? 'Подготовка нефти и газа' : 'Neft va gazni tayyorlash', score: Math.round(71 * (mod > 0.5 ? 1 : 1.1)), students: m(14), above70: m(9) },
     ];
 
     const recentReports = [
@@ -261,11 +267,11 @@ export default function Analytics() {
                         {/* Donut */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                             <h3 className="font-bold text-gray-900 mb-4">{ru ? 'Распределение по уровням' : "Darajalar bo'yicha taqsimlanish"}</h3>
-                            <DonutChart total={86} label={ru ? 'студентов' : 'talaba'} data={[
-                                { label: ru ? 'Высокий (80-100%)' : 'Yuqori', value: 26, color: '#4F46E5' },
-                                { label: ru ? 'Выше среднего (60-79%)' : "O'rta-yuqori", value: 30, color: '#22C55E' },
-                                { label: ru ? 'Средний (40-59%)' : "O'rta", value: 20, color: '#F59E0B' },
-                                { label: ru ? 'Низкий (0-39%)' : 'Past', value: 10, color: '#EF4444' },
+                            <DonutChart total={m(86) || 1} label={ru ? 'студентов' : 'talaba'} data={[
+                                { label: ru ? 'Высокий (80-100%)' : 'Yuqori', value: m(26), color: '#4F46E5' },
+                                { label: ru ? 'Выше среднего (60-79%)' : "O'rta-yuqori", value: m(30), color: '#22C55E' },
+                                { label: ru ? 'Средний (40-59%)' : "O'rta", value: m(20), color: '#F59E0B' },
+                                { label: ru ? 'Низкий (0-39%)' : 'Past', value: m(10), color: '#EF4444' },
                             ]} />
                         </div>
                     </div>
